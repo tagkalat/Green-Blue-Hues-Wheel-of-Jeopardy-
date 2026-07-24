@@ -1,0 +1,282 @@
+======================================================================
+WHEEL OF JEOPARDY - SKELETAL ARCHITECTURE DEMO
+======================================================================
+This is a console-based driver for the skeletal increment.
+It simulates a short gameplay session and prints subsystem messages.
+
+
+======================================================================
+STARTUP: INITIALIZE GAME ARCHITECTURE
+======================================================================
+01. [Console Driver] -> [Game Controller]: StartGameRequest
+02. [Game Controller] -> [Question Repository]: LoadCategoriesRequest
+03. [Question Repository] -> [Game Controller]: CategoriesLoaded | Payload: {'categories': ['Science', 'History', 'Movies', 'Sports', 'Music', 'Geography']}
+04. [Game Controller] -> [Board Service]: InitializeBoardRequest | Payload: {'categories': ['Science', 'History', 'Movies', 'Sports', 'Music', 'Geography']}
+05. [Board Service] -> [Console Driver]: BoardReady | Payload: {'categories': ['Science', 'History', 'Movies', 'Sports', 'Music', 'Geography'], 'available_values': {'Science': [100, 200], 'History': [100, 200], 'Movies': [100, 200], 'Sports': [100, 200], 'Music': [100, 200], 'Geography': [100, 200]}}
+06. [Announcer Service] -> [Console Driver]: AnnouncerMessage | Payload: {'message': 'Welcome to Wheel of Jeopardy. Skeletal architecture initialized.'}
+
+ANNOUNCER: Welcome to Wheel of Jeopardy. Skeletal architecture initialized.
+
+QUESTION BOARD STATE
+----------------------------------------------------------------------
+Science      : 100, 200
+History      : 100, 200
+Movies       : 100, 200
+Sports       : 100, 200
+Music        : 100, 200
+Geography    : 100, 200
+
+SCOREBOARD
+----------------------------------------------------------------------
+Player 1 | Score:    0 | Free Spin Tokens: 0
+Player 2 | Score:    0 | Free Spin Tokens: 0
+Current player: Player 1
+
+======================================================================
+TURN 1: PLAYER 1 SPINS SCIENCE AND ANSWERS CORRECTLY
+======================================================================
+07. [Console Driver] -> [Game Controller]: SpinRequest | Payload: {'player': 'Player 1'}
+08. [Game Controller] -> [Wheel Service]: SpinWheelRequest | Payload: {'player': 'Player 1', 'forced_result': 'Science'}
+09. [Wheel Service] -> [Game Controller]: WheelResult | Payload: {'result': 'Science'}
+10. [Announcer Service] -> [Console Driver]: AnnouncerMessage | Payload: {'message': 'Player 1 spun Science.'}
+
+ANNOUNCER: Player 1 spun Science.
+11. [Game Controller] -> [Board Service]: QuestionRequest | Payload: {'category': 'Science', 'value': 100}
+12. [Board Service] -> [Question Repository]: GetQuestionRequest | Payload: {'category': 'Science', 'value': 100}
+13. [Question Repository] -> [Board Service]: QuestionReturned | Payload: {'category': 'Science', 'value': 100}
+14. [Board Service] -> [Game Controller]: BoardStateUpdated | Payload: {'category': 'Science', 'removed_value': 100}
+15. [Board Service] -> [Game Controller]: QuestionReady | Payload: {'category': 'Science', 'value': 100}
+16. [Announcer Service] -> [Console Driver]: AnnouncerMessage | Payload: {'message': 'Question ready: Science for 100 points.'}
+
+ANNOUNCER: Question ready: Science for 100 points.
+
+QUESTION
+----------------------------------------------------------------------
+Category: Science
+Value: 100
+What planet is known as the Red Planet?
+  1. Mars
+  2. Venus
+  3. Jupiter
+
+SCRIPTED ANSWER: Mars
+17. [Console Driver] -> [Game Controller]: SubmitAnswer | Payload: {'player': 'Player 1', 'selected_answer': 'Mars'}
+18. [Game Controller] -> [Player Score Service]: CorrectAnswerRequest | Payload: {'player': 'Player 1', 'points': 100}
+19. [Player Score Service] -> [Game Controller]: ScoreUpdated | Payload: {'player': 'Player 1', 'score': 100}
+20. [Announcer Service] -> [Console Driver]: AnnouncerMessage | Payload: {'message': "Correct. Player 1's score is now 100."}
+
+ANNOUNCER: Correct. Player 1's score is now 100.
+
+SCOREBOARD
+----------------------------------------------------------------------
+Player 1 | Score:  100 | Free Spin Tokens: 0
+Player 2 | Score:    0 | Free Spin Tokens: 0
+Current player: Player 1
+
+======================================================================
+TURN 2: PLAYER 1 SPINS FREE SPIN
+======================================================================
+21. [Console Driver] -> [Game Controller]: SpinRequest | Payload: {'player': 'Player 1'}
+22. [Game Controller] -> [Wheel Service]: SpinWheelRequest | Payload: {'player': 'Player 1', 'forced_result': 'Free Spin'}
+23. [Wheel Service] -> [Game Controller]: WheelResult | Payload: {'result': 'Free Spin'}
+24. [Game Controller] -> [Player Score Service]: AwardFreeSpinRequest | Payload: {'player': 'Player 1'}
+25. [Player Score Service] -> [Game Controller]: FreeSpinAwarded | Payload: {'player': 'Player 1', 'free_spins': 1}
+26. [Announcer Service] -> [Console Driver]: AnnouncerMessage | Payload: {'message': 'Player 1 earned a free spin token and may spin again.'}
+
+ANNOUNCER: Player 1 earned a free spin token and may spin again.
+
+SCOREBOARD
+----------------------------------------------------------------------
+Player 1 | Score:  100 | Free Spin Tokens: 1
+Player 2 | Score:    0 | Free Spin Tokens: 0
+Current player: Player 1
+
+======================================================================
+TURN 3: PLAYER 1 SPINS HISTORY AND ANSWERS INCORRECTLY
+======================================================================
+27. [Console Driver] -> [Game Controller]: SpinRequest | Payload: {'player': 'Player 1'}
+28. [Game Controller] -> [Wheel Service]: SpinWheelRequest | Payload: {'player': 'Player 1', 'forced_result': 'History'}
+29. [Wheel Service] -> [Game Controller]: WheelResult | Payload: {'result': 'History'}
+30. [Announcer Service] -> [Console Driver]: AnnouncerMessage | Payload: {'message': 'Player 1 spun History.'}
+
+ANNOUNCER: Player 1 spun History.
+31. [Game Controller] -> [Board Service]: QuestionRequest | Payload: {'category': 'History', 'value': 100}
+32. [Board Service] -> [Question Repository]: GetQuestionRequest | Payload: {'category': 'History', 'value': 100}
+33. [Question Repository] -> [Board Service]: QuestionReturned | Payload: {'category': 'History', 'value': 100}
+34. [Board Service] -> [Game Controller]: BoardStateUpdated | Payload: {'category': 'History', 'removed_value': 100}
+35. [Board Service] -> [Game Controller]: QuestionReady | Payload: {'category': 'History', 'value': 100}
+36. [Announcer Service] -> [Console Driver]: AnnouncerMessage | Payload: {'message': 'Question ready: History for 100 points.'}
+
+ANNOUNCER: Question ready: History for 100 points.
+
+QUESTION
+----------------------------------------------------------------------
+Category: History
+Value: 100
+Who was the first president of the United States?
+  1. George Washington
+  2. Abraham Lincoln
+  3. John Adams
+
+SCRIPTED ANSWER: Abraham Lincoln
+37. [Console Driver] -> [Game Controller]: SubmitAnswer | Payload: {'player': 'Player 1', 'selected_answer': 'Abraham Lincoln'}
+38. [Game Controller] -> [Player Score Service]: IncorrectAnswerRequest | Payload: {'player': 'Player 1', 'points': 100}
+39. [Player Score Service] -> [Game Controller]: ScoreUpdated | Payload: {'player': 'Player 1', 'score': 0}
+40. [Announcer Service] -> [Console Driver]: AnnouncerMessage | Payload: {'message': "Incorrect. The correct answer was George Washington. Player 1's score is now 0."}
+
+ANNOUNCER: Incorrect. The correct answer was George Washington. Player 1's score is now 0.
+41. [Game Controller] -> [Player Score Service]: CheckFreeSpinToken | Payload: {'player': 'Player 1'}
+42. [Player Score Service] -> [Game Controller]: FreeSpinRedeemed | Payload: {'player': 'Player 1', 'free_spins': 0}
+43. [Announcer Service] -> [Console Driver]: AnnouncerMessage | Payload: {'message': 'Player 1 used a free spin token and keeps the turn.'}
+
+ANNOUNCER: Player 1 used a free spin token and keeps the turn.
+
+SCOREBOARD
+----------------------------------------------------------------------
+Player 1 | Score:    0 | Free Spin Tokens: 0
+Player 2 | Score:    0 | Free Spin Tokens: 0
+Current player: Player 1
+
+======================================================================
+TURN 4: PLAYER 1 SPINS BANKRUPT
+======================================================================
+44. [Console Driver] -> [Game Controller]: SpinRequest | Payload: {'player': 'Player 1'}
+45. [Game Controller] -> [Wheel Service]: SpinWheelRequest | Payload: {'player': 'Player 1', 'forced_result': 'Bankrupt'}
+46. [Wheel Service] -> [Game Controller]: WheelResult | Payload: {'result': 'Bankrupt'}
+47. [Game Controller] -> [Player Score Service]: BankruptPlayerRequest | Payload: {'player': 'Player 1'}
+48. [Player Score Service] -> [Game Controller]: BankruptApplied | Payload: {'player': 'Player 1', 'score': 0}
+49. [Announcer Service] -> [Console Driver]: AnnouncerMessage | Payload: {'message': 'Player 1 spun Bankrupt. Score resets and the turn passes.'}
+
+ANNOUNCER: Player 1 spun Bankrupt. Score resets and the turn passes.
+50. [Player Score Service] -> [Game Controller]: TurnChanged | Payload: {'current_player': 'Player 2'}
+
+SCOREBOARD
+----------------------------------------------------------------------
+Player 1 | Score:    0 | Free Spin Tokens: 0
+Player 2 | Score:    0 | Free Spin Tokens: 0
+Current player: Player 2
+
+======================================================================
+TURN 5: PLAYER 2 SPINS MOVIES AND ANSWERS CORRECTLY
+======================================================================
+51. [Console Driver] -> [Game Controller]: SpinRequest | Payload: {'player': 'Player 2'}
+52. [Game Controller] -> [Wheel Service]: SpinWheelRequest | Payload: {'player': 'Player 2', 'forced_result': 'Movies'}
+53. [Wheel Service] -> [Game Controller]: WheelResult | Payload: {'result': 'Movies'}
+54. [Announcer Service] -> [Console Driver]: AnnouncerMessage | Payload: {'message': 'Player 2 spun Movies.'}
+
+ANNOUNCER: Player 2 spun Movies.
+55. [Game Controller] -> [Board Service]: QuestionRequest | Payload: {'category': 'Movies', 'value': 100}
+56. [Board Service] -> [Question Repository]: GetQuestionRequest | Payload: {'category': 'Movies', 'value': 100}
+57. [Question Repository] -> [Board Service]: QuestionReturned | Payload: {'category': 'Movies', 'value': 100}
+58. [Board Service] -> [Game Controller]: BoardStateUpdated | Payload: {'category': 'Movies', 'removed_value': 100}
+59. [Board Service] -> [Game Controller]: QuestionReady | Payload: {'category': 'Movies', 'value': 100}
+60. [Announcer Service] -> [Console Driver]: AnnouncerMessage | Payload: {'message': 'Question ready: Movies for 100 points.'}
+
+ANNOUNCER: Question ready: Movies for 100 points.
+
+QUESTION
+----------------------------------------------------------------------
+Category: Movies
+Value: 100
+Which movie features a character named Simba?
+  1. The Lion King
+  2. Toy Story
+  3. Finding Nemo
+
+SCRIPTED ANSWER: The Lion King
+61. [Console Driver] -> [Game Controller]: SubmitAnswer | Payload: {'player': 'Player 2', 'selected_answer': 'The Lion King'}
+62. [Game Controller] -> [Player Score Service]: CorrectAnswerRequest | Payload: {'player': 'Player 2', 'points': 100}
+63. [Player Score Service] -> [Game Controller]: ScoreUpdated | Payload: {'player': 'Player 2', 'score': 100}
+64. [Announcer Service] -> [Console Driver]: AnnouncerMessage | Payload: {'message': "Correct. Player 2's score is now 100."}
+
+ANNOUNCER: Correct. Player 2's score is now 100.
+
+SCOREBOARD
+----------------------------------------------------------------------
+Player 1 | Score:    0 | Free Spin Tokens: 0
+Player 2 | Score:  100 | Free Spin Tokens: 0
+Current player: Player 2
+
+======================================================================
+FINAL ARCHITECTURE VALIDATION SUMMARY
+======================================================================
+Subsystems demonstrated:
+- Console Driver
+- Game Controller
+- Wheel Service
+- Board Service
+- Question Repository
+- Player Score Service
+- Announcer Service
+- Message Bus
+
+Result: Skeletal subsystem communication validated.
+Future work: Replace the Console Driver with the final web UI.
+
+======================================================================
+FULL SUBSYSTEM MESSAGE LOG
+======================================================================
+01. [Console Driver] -> [Game Controller]: StartGameRequest
+02. [Game Controller] -> [Question Repository]: LoadCategoriesRequest
+03. [Question Repository] -> [Game Controller]: CategoriesLoaded | Payload: {'categories': ['Science', 'History', 'Movies', 'Sports', 'Music', 'Geography']}
+04. [Game Controller] -> [Board Service]: InitializeBoardRequest | Payload: {'categories': ['Science', 'History', 'Movies', 'Sports', 'Music', 'Geography']}
+05. [Board Service] -> [Console Driver]: BoardReady | Payload: {'categories': ['Science', 'History', 'Movies', 'Sports', 'Music', 'Geography'], 'available_values': {'Science': [100, 200], 'History': [100, 200], 'Movies': [100, 200], 'Sports': [100, 200], 'Music': [100, 200], 'Geography': [100, 200]}}
+06. [Announcer Service] -> [Console Driver]: AnnouncerMessage | Payload: {'message': 'Welcome to Wheel of Jeopardy. Skeletal architecture initialized.'}
+07. [Console Driver] -> [Game Controller]: SpinRequest | Payload: {'player': 'Player 1'}
+08. [Game Controller] -> [Wheel Service]: SpinWheelRequest | Payload: {'player': 'Player 1', 'forced_result': 'Science'}
+09. [Wheel Service] -> [Game Controller]: WheelResult | Payload: {'result': 'Science'}
+10. [Announcer Service] -> [Console Driver]: AnnouncerMessage | Payload: {'message': 'Player 1 spun Science.'}
+11. [Game Controller] -> [Board Service]: QuestionRequest | Payload: {'category': 'Science', 'value': 100}
+12. [Board Service] -> [Question Repository]: GetQuestionRequest | Payload: {'category': 'Science', 'value': 100}
+13. [Question Repository] -> [Board Service]: QuestionReturned | Payload: {'category': 'Science', 'value': 100}
+14. [Board Service] -> [Game Controller]: BoardStateUpdated | Payload: {'category': 'Science', 'removed_value': 100}
+15. [Board Service] -> [Game Controller]: QuestionReady | Payload: {'category': 'Science', 'value': 100}
+16. [Announcer Service] -> [Console Driver]: AnnouncerMessage | Payload: {'message': 'Question ready: Science for 100 points.'}
+17. [Console Driver] -> [Game Controller]: SubmitAnswer | Payload: {'player': 'Player 1', 'selected_answer': 'Mars'}
+18. [Game Controller] -> [Player Score Service]: CorrectAnswerRequest | Payload: {'player': 'Player 1', 'points': 100}
+19. [Player Score Service] -> [Game Controller]: ScoreUpdated | Payload: {'player': 'Player 1', 'score': 100}
+20. [Announcer Service] -> [Console Driver]: AnnouncerMessage | Payload: {'message': "Correct. Player 1's score is now 100."}
+21. [Console Driver] -> [Game Controller]: SpinRequest | Payload: {'player': 'Player 1'}
+22. [Game Controller] -> [Wheel Service]: SpinWheelRequest | Payload: {'player': 'Player 1', 'forced_result': 'Free Spin'}
+23. [Wheel Service] -> [Game Controller]: WheelResult | Payload: {'result': 'Free Spin'}
+24. [Game Controller] -> [Player Score Service]: AwardFreeSpinRequest | Payload: {'player': 'Player 1'}
+25. [Player Score Service] -> [Game Controller]: FreeSpinAwarded | Payload: {'player': 'Player 1', 'free_spins': 1}
+26. [Announcer Service] -> [Console Driver]: AnnouncerMessage | Payload: {'message': 'Player 1 earned a free spin token and may spin again.'}
+27. [Console Driver] -> [Game Controller]: SpinRequest | Payload: {'player': 'Player 1'}
+28. [Game Controller] -> [Wheel Service]: SpinWheelRequest | Payload: {'player': 'Player 1', 'forced_result': 'History'}
+29. [Wheel Service] -> [Game Controller]: WheelResult | Payload: {'result': 'History'}
+30. [Announcer Service] -> [Console Driver]: AnnouncerMessage | Payload: {'message': 'Player 1 spun History.'}
+31. [Game Controller] -> [Board Service]: QuestionRequest | Payload: {'category': 'History', 'value': 100}
+32. [Board Service] -> [Question Repository]: GetQuestionRequest | Payload: {'category': 'History', 'value': 100}
+33. [Question Repository] -> [Board Service]: QuestionReturned | Payload: {'category': 'History', 'value': 100}
+34. [Board Service] -> [Game Controller]: BoardStateUpdated | Payload: {'category': 'History', 'removed_value': 100}
+35. [Board Service] -> [Game Controller]: QuestionReady | Payload: {'category': 'History', 'value': 100}
+36. [Announcer Service] -> [Console Driver]: AnnouncerMessage | Payload: {'message': 'Question ready: History for 100 points.'}
+37. [Console Driver] -> [Game Controller]: SubmitAnswer | Payload: {'player': 'Player 1', 'selected_answer': 'Abraham Lincoln'}
+38. [Game Controller] -> [Player Score Service]: IncorrectAnswerRequest | Payload: {'player': 'Player 1', 'points': 100}
+39. [Player Score Service] -> [Game Controller]: ScoreUpdated | Payload: {'player': 'Player 1', 'score': 0}
+40. [Announcer Service] -> [Console Driver]: AnnouncerMessage | Payload: {'message': "Incorrect. The correct answer was George Washington. Player 1's score is now 0."}
+41. [Game Controller] -> [Player Score Service]: CheckFreeSpinToken | Payload: {'player': 'Player 1'}
+42. [Player Score Service] -> [Game Controller]: FreeSpinRedeemed | Payload: {'player': 'Player 1', 'free_spins': 0}
+43. [Announcer Service] -> [Console Driver]: AnnouncerMessage | Payload: {'message': 'Player 1 used a free spin token and keeps the turn.'}
+44. [Console Driver] -> [Game Controller]: SpinRequest | Payload: {'player': 'Player 1'}
+45. [Game Controller] -> [Wheel Service]: SpinWheelRequest | Payload: {'player': 'Player 1', 'forced_result': 'Bankrupt'}
+46. [Wheel Service] -> [Game Controller]: WheelResult | Payload: {'result': 'Bankrupt'}
+47. [Game Controller] -> [Player Score Service]: BankruptPlayerRequest | Payload: {'player': 'Player 1'}
+48. [Player Score Service] -> [Game Controller]: BankruptApplied | Payload: {'player': 'Player 1', 'score': 0}
+49. [Announcer Service] -> [Console Driver]: AnnouncerMessage | Payload: {'message': 'Player 1 spun Bankrupt. Score resets and the turn passes.'}
+50. [Player Score Service] -> [Game Controller]: TurnChanged | Payload: {'current_player': 'Player 2'}
+51. [Console Driver] -> [Game Controller]: SpinRequest | Payload: {'player': 'Player 2'}
+52. [Game Controller] -> [Wheel Service]: SpinWheelRequest | Payload: {'player': 'Player 2', 'forced_result': 'Movies'}
+53. [Wheel Service] -> [Game Controller]: WheelResult | Payload: {'result': 'Movies'}
+54. [Announcer Service] -> [Console Driver]: AnnouncerMessage | Payload: {'message': 'Player 2 spun Movies.'}
+55. [Game Controller] -> [Board Service]: QuestionRequest | Payload: {'category': 'Movies', 'value': 100}
+56. [Board Service] -> [Question Repository]: GetQuestionRequest | Payload: {'category': 'Movies', 'value': 100}
+57. [Question Repository] -> [Board Service]: QuestionReturned | Payload: {'category': 'Movies', 'value': 100}
+58. [Board Service] -> [Game Controller]: BoardStateUpdated | Payload: {'category': 'Movies', 'removed_value': 100}
+59. [Board Service] -> [Game Controller]: QuestionReady | Payload: {'category': 'Movies', 'value': 100}
+60. [Announcer Service] -> [Console Driver]: AnnouncerMessage | Payload: {'message': 'Question ready: Movies for 100 points.'}
+61. [Console Driver] -> [Game Controller]: SubmitAnswer | Payload: {'player': 'Player 2', 'selected_answer': 'The Lion King'}
+62. [Game Controller] -> [Player Score Service]: CorrectAnswerRequest | Payload: {'player': 'Player 2', 'points': 100}
+63. [Player Score Service] -> [Game Controller]: ScoreUpdated | Payload: {'player': 'Player 2', 'score': 100}
+64. [Announcer Service] -> [Console Driver]: AnnouncerMessage | Payload: {'message': "Correct. Player 2's score is now 100."}
