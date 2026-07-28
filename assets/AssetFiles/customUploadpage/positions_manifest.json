@@ -1,0 +1,64 @@
+{
+  "CustomUploadBackground_0": {
+    "type": "full_canvas",
+    "left_pct": 0,
+    "top_pct": 0,
+    "width_pct": 100,
+    "height_pct": 100
+  },
+  "CustomUploadRulebox_0": {
+    "type": "element",
+    "x": 160,
+    "y": 20,
+    "w": 160,
+    "h": 90,
+    "left_pct": 33.333,
+    "top_pct": 7.407,
+    "width_pct": 33.333,
+    "height_pct": 33.333
+  },
+  "CustomUploadRulebox_1": {
+    "type": "element",
+    "x": 160,
+    "y": 20,
+    "w": 160,
+    "h": 90,
+    "left_pct": 33.333,
+    "top_pct": 7.407,
+    "width_pct": 33.333,
+    "height_pct": 33.333
+  },
+  "CustomUploadDonemark_1": {
+    "type": "element",
+    "x": 345,
+    "y": 55,
+    "w": 40,
+    "h": 30,
+    "left_pct": 71.875,
+    "top_pct": 20.37,
+    "width_pct": 8.333,
+    "height_pct": 11.111
+  },
+  "CustomUploadBackbutton_0": {
+    "type": "element",
+    "x": 4,
+    "y": 1,
+    "w": 37,
+    "h": 35,
+    "left_pct": 0.833,
+    "top_pct": 0.37,
+    "width_pct": 7.708,
+    "height_pct": 12.963
+  },
+  "CustomUploadBackbutton_1": {
+    "type": "element",
+    "x": 4,
+    "y": 6,
+    "w": 37,
+    "h": 30,
+    "left_pct": 0.833,
+    "top_pct": 2.222,
+    "width_pct": 7.708,
+    "height_pct": 11.111
+  }
+}

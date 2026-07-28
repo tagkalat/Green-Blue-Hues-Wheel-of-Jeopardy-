@@ -1,0 +1,148 @@
+{
+  "AnswerPageFreeSpinNoButton_0": {
+    "type": "element",
+    "x": 263,
+    "y": 225,
+    "w": 37,
+    "h": 35,
+    "left_pct": 54.792,
+    "top_pct": 83.333,
+    "width_pct": 7.708,
+    "height_pct": 12.963
+  },
+  "AnswerPageFreeSpinNoButton_1": {
+    "type": "element",
+    "x": 263,
+    "y": 230,
+    "w": 37,
+    "h": 30,
+    "left_pct": 54.792,
+    "top_pct": 85.185,
+    "width_pct": 7.708,
+    "height_pct": 11.111
+  },
+  "AnswerPageFreeSpin_0": {
+    "type": "element",
+    "x": 111,
+    "y": 175,
+    "w": 251,
+    "h": 45,
+    "left_pct": 23.125,
+    "top_pct": 64.815,
+    "width_pct": 52.292,
+    "height_pct": 16.667
+  },
+  "AnswerPageFreeSpin_1": {
+    "type": "element",
+    "x": 111,
+    "y": 175,
+    "w": 251,
+    "h": 45,
+    "left_pct": 23.125,
+    "top_pct": 64.815,
+    "width_pct": 52.292,
+    "height_pct": 16.667
+  },
+  "AnswerPageCurrentPoints_0": {
+    "type": "element",
+    "x": 391,
+    "y": 215,
+    "w": 82,
+    "h": 45,
+    "left_pct": 81.458,
+    "top_pct": 79.63,
+    "width_pct": 17.083,
+    "height_pct": 16.667
+  },
+  "AnswerPageCurrentPoints_1": {
+    "type": "element",
+    "x": 391,
+    "y": 215,
+    "w": 82,
+    "h": 45,
+    "left_pct": 81.458,
+    "top_pct": 79.63,
+    "width_pct": 17.083,
+    "height_pct": 16.667
+  },
+  "AnswerPageAnswerCorrectBox_0": {
+    "type": "element",
+    "x": 80,
+    "y": 88,
+    "w": 315,
+    "h": 83,
+    "left_pct": 16.667,
+    "top_pct": 32.593,
+    "width_pct": 65.625,
+    "height_pct": 30.741
+  },
+  "AnswerPageAnswerCorrectBox_1": {
+    "type": "element",
+    "x": 80,
+    "y": 88,
+    "w": 315,
+    "h": 83,
+    "left_pct": 16.667,
+    "top_pct": 32.593,
+    "width_pct": 65.625,
+    "height_pct": 30.741
+  },
+  "AnswerPageAnswerSelectedBox_0": {
+    "type": "element",
+    "x": 70,
+    "y": 0,
+    "w": 335,
+    "h": 83,
+    "left_pct": 14.583,
+    "top_pct": 0.0,
+    "width_pct": 69.792,
+    "height_pct": 30.741
+  },
+  "AnswerPageAnswerSelectedBox_1": {
+    "type": "element",
+    "x": 70,
+    "y": 0,
+    "w": 335,
+    "h": 83,
+    "left_pct": 14.583,
+    "top_pct": 0.0,
+    "width_pct": 69.792,
+    "height_pct": 30.741
+  },
+  "AnswerPageBackground_0": {
+    "type": "full_canvas",
+    "left_pct": 0,
+    "top_pct": 0,
+    "width_pct": 100,
+    "height_pct": 100
+  },
+  "AnswerPageBackground_1": {
+    "type": "full_canvas",
+    "left_pct": 0,
+    "top_pct": 0,
+    "width_pct": 100,
+    "height_pct": 100
+  },
+  "AnswerPageFreeSpinYesButton_0": {
+    "type": "element",
+    "x": 180,
+    "y": 225,
+    "w": 37,
+    "h": 35,
+    "left_pct": 37.5,
+    "top_pct": 83.333,
+    "width_pct": 7.708,
+    "height_pct": 12.963
+  },
+  "AnswerPageFreeSpinYesButton_1": {
+    "type": "element",
+    "x": 180,
+    "y": 230,
+    "w": 37,
+    "h": 30,
+    "left_pct": 37.5,
+    "top_pct": 85.185,
+    "width_pct": 7.708,
+    "height_pct": 11.111
+  }
+}

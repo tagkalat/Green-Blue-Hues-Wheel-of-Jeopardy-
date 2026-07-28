@@ -1,0 +1,38 @@
+{
+  "GameStartBackbutton_0": {
+    "type": "element",
+    "x": 4,
+    "y": 1,
+    "w": 37,
+    "h": 35,
+    "left_pct": 0.833,
+    "top_pct": 0.37,
+    "width_pct": 7.708,
+    "height_pct": 12.963
+  },
+  "GameStartBackbutton_1": {
+    "type": "element",
+    "x": 4,
+    "y": 6,
+    "w": 37,
+    "h": 30,
+    "left_pct": 0.833,
+    "top_pct": 2.222,
+    "width_pct": 7.708,
+    "height_pct": 11.111
+  },
+  "GameStartRules_0": {
+    "type": "full_canvas",
+    "left_pct": 0,
+    "top_pct": 0,
+    "width_pct": 100,
+    "height_pct": 100
+  },
+  "GameStartRules_1": {
+    "type": "full_canvas",
+    "left_pct": 0,
+    "top_pct": 0,
+    "width_pct": 100,
+    "height_pct": 100
+  }
+}

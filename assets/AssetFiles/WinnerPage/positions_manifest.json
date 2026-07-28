@@ -1,0 +1,148 @@
+{
+  "WinnerPageBackground_0": {
+    "type": "full_canvas",
+    "left_pct": 0,
+    "top_pct": 0,
+    "width_pct": 100,
+    "height_pct": 100
+  },
+  "WinnerPageBackground_1": {
+    "type": "full_canvas",
+    "left_pct": 0,
+    "top_pct": 0,
+    "width_pct": 100,
+    "height_pct": 100
+  },
+  "MainMenuButton_0": {
+    "type": "element",
+    "x": 184,
+    "y": 218,
+    "w": 112,
+    "h": 47,
+    "left_pct": 38.333,
+    "top_pct": 80.741,
+    "width_pct": 23.333,
+    "height_pct": 17.407
+  },
+  "MainMenuButton_1": {
+    "type": "element",
+    "x": 184,
+    "y": 225,
+    "w": 112,
+    "h": 40,
+    "left_pct": 38.333,
+    "top_pct": 83.333,
+    "width_pct": 23.333,
+    "height_pct": 14.815
+  },
+  "Loser1AndPoints_0": {
+    "type": "element",
+    "x": 60,
+    "y": 145,
+    "w": 100,
+    "h": 67,
+    "left_pct": 12.5,
+    "top_pct": 53.704,
+    "width_pct": 20.833,
+    "height_pct": 24.815
+  },
+  "Loser1AndPoints_1": {
+    "type": "element",
+    "x": 60,
+    "y": 145,
+    "w": 100,
+    "h": 67,
+    "left_pct": 12.5,
+    "top_pct": 53.704,
+    "width_pct": 20.833,
+    "height_pct": 24.815
+  },
+  "WinnerPoints_0": {
+    "type": "element",
+    "x": 180,
+    "y": 99,
+    "w": 120,
+    "h": 35,
+    "left_pct": 37.5,
+    "top_pct": 36.667,
+    "width_pct": 25.0,
+    "height_pct": 12.963
+  },
+  "WinnerPoints_1": {
+    "type": "element",
+    "x": 180,
+    "y": 99,
+    "w": 120,
+    "h": 35,
+    "left_pct": 37.5,
+    "top_pct": 36.667,
+    "width_pct": 25.0,
+    "height_pct": 12.963
+  },
+  "Loser3AndPoints_0": {
+    "type": "element",
+    "x": 320,
+    "y": 145,
+    "w": 100,
+    "h": 67,
+    "left_pct": 66.667,
+    "top_pct": 53.704,
+    "width_pct": 20.833,
+    "height_pct": 24.815
+  },
+  "Loser3AndPoints_1": {
+    "type": "element",
+    "x": 320,
+    "y": 145,
+    "w": 100,
+    "h": 67,
+    "left_pct": 66.667,
+    "top_pct": 53.704,
+    "width_pct": 20.833,
+    "height_pct": 24.815
+  },
+  "Loser2AndPoints_0": {
+    "type": "element",
+    "x": 190,
+    "y": 145,
+    "w": 100,
+    "h": 67,
+    "left_pct": 39.583,
+    "top_pct": 53.704,
+    "width_pct": 20.833,
+    "height_pct": 24.815
+  },
+  "Loser2AndPoints_1": {
+    "type": "element",
+    "x": 190,
+    "y": 145,
+    "w": 100,
+    "h": 67,
+    "left_pct": 39.583,
+    "top_pct": 53.704,
+    "width_pct": 20.833,
+    "height_pct": 24.815
+  },
+  "WinnerPlayerTextBox_0": {
+    "type": "element",
+    "x": 165,
+    "y": 51,
+    "w": 150,
+    "h": 41,
+    "left_pct": 34.375,
+    "top_pct": 18.889,
+    "width_pct": 31.25,
+    "height_pct": 15.185
+  },
+  "WinnerPlayerTextBox_1": {
+    "type": "element",
+    "x": 165,
+    "y": 51,
+    "w": 150,
+    "h": 41,
+    "left_pct": 34.375,
+    "top_pct": 18.889,
+    "width_pct": 31.25,
+    "height_pct": 15.185
+  }
+}

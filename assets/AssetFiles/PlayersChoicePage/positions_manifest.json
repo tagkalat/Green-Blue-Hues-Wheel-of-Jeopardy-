@@ -1,0 +1,148 @@
+{
+  "PlayersChoicePageBackground_0": {
+    "type": "full_canvas",
+    "left_pct": 0,
+    "top_pct": 0,
+    "width_pct": 100,
+    "height_pct": 100
+  },
+  "PlayersChoicePageBackground_1": {
+    "type": "full_canvas",
+    "left_pct": 0,
+    "top_pct": 0,
+    "width_pct": 100,
+    "height_pct": 100
+  },
+  "PlayersChoiceCat6Button_0": {
+    "type": "element",
+    "x": 255,
+    "y": 197,
+    "w": 110,
+    "h": 62,
+    "left_pct": 53.125,
+    "top_pct": 72.963,
+    "width_pct": 22.917,
+    "height_pct": 22.963
+  },
+  "PlayersChoiceCat6Button_1": {
+    "type": "element",
+    "x": 255,
+    "y": 207,
+    "w": 110,
+    "h": 51,
+    "left_pct": 53.125,
+    "top_pct": 76.667,
+    "width_pct": 22.917,
+    "height_pct": 18.889
+  },
+  "PlayersChoiceCat3Button_0": {
+    "type": "element",
+    "x": 120,
+    "y": 197,
+    "w": 110,
+    "h": 62,
+    "left_pct": 25.0,
+    "top_pct": 72.963,
+    "width_pct": 22.917,
+    "height_pct": 22.963
+  },
+  "PlayersChoiceCat3Button_1": {
+    "type": "element",
+    "x": 120,
+    "y": 207,
+    "w": 110,
+    "h": 51,
+    "left_pct": 25.0,
+    "top_pct": 76.667,
+    "width_pct": 22.917,
+    "height_pct": 18.889
+  },
+  "PlayersChoiceCat2Button_0": {
+    "type": "element",
+    "x": 120,
+    "y": 129,
+    "w": 110,
+    "h": 62,
+    "left_pct": 25.0,
+    "top_pct": 47.778,
+    "width_pct": 22.917,
+    "height_pct": 22.963
+  },
+  "PlayersChoiceCat2Button_1": {
+    "type": "element",
+    "x": 120,
+    "y": 140,
+    "w": 110,
+    "h": 51,
+    "left_pct": 25.0,
+    "top_pct": 51.852,
+    "width_pct": 22.917,
+    "height_pct": 18.889
+  },
+  "PlayersChoiceCat5Button_0": {
+    "type": "element",
+    "x": 255,
+    "y": 129,
+    "w": 110,
+    "h": 62,
+    "left_pct": 53.125,
+    "top_pct": 47.778,
+    "width_pct": 22.917,
+    "height_pct": 22.963
+  },
+  "PlayersChoiceCat5Button_1": {
+    "type": "element",
+    "x": 255,
+    "y": 140,
+    "w": 110,
+    "h": 51,
+    "left_pct": 53.125,
+    "top_pct": 51.852,
+    "width_pct": 22.917,
+    "height_pct": 18.889
+  },
+  "PlayersChoiceCat4Button_0": {
+    "type": "element",
+    "x": 255,
+    "y": 62,
+    "w": 110,
+    "h": 62,
+    "left_pct": 53.125,
+    "top_pct": 22.963,
+    "width_pct": 22.917,
+    "height_pct": 22.963
+  },
+  "PlayersChoiceCat4Button_1": {
+    "type": "element",
+    "x": 255,
+    "y": 72,
+    "w": 110,
+    "h": 51,
+    "left_pct": 53.125,
+    "top_pct": 26.667,
+    "width_pct": 22.917,
+    "height_pct": 18.889
+  },
+  "PlayersChoiceCat1Button_0": {
+    "type": "element",
+    "x": 120,
+    "y": 62,
+    "w": 110,
+    "h": 62,
+    "left_pct": 25.0,
+    "top_pct": 22.963,
+    "width_pct": 22.917,
+    "height_pct": 22.963
+  },
+  "PlayersChoiceCat1Button_1": {
+    "type": "element",
+    "x": 120,
+    "y": 72,
+    "w": 110,
+    "h": 51,
+    "left_pct": 25.0,
+    "top_pct": 26.667,
+    "width_pct": 22.917,
+    "height_pct": 18.889
+  }
+}

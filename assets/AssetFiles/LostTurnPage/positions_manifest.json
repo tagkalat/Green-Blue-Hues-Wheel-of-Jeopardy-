@@ -1,0 +1,82 @@
+{
+  "IfFreeSpin_0": {
+    "type": "element",
+    "x": 75,
+    "y": 124,
+    "w": 330,
+    "h": 57,
+    "left_pct": 15.625,
+    "top_pct": 45.926,
+    "width_pct": 68.75,
+    "height_pct": 21.111
+  },
+  "IfFreeSpin_1": {
+    "type": "element",
+    "x": 75,
+    "y": 124,
+    "w": 330,
+    "h": 57,
+    "left_pct": 15.625,
+    "top_pct": 45.926,
+    "width_pct": 68.75,
+    "height_pct": 21.111
+  },
+  "NoButton_0": {
+    "type": "element",
+    "x": 263,
+    "y": 194,
+    "w": 37,
+    "h": 35,
+    "left_pct": 54.792,
+    "top_pct": 71.852,
+    "width_pct": 7.708,
+    "height_pct": 12.963
+  },
+  "NoButton_1": {
+    "type": "element",
+    "x": 263,
+    "y": 199,
+    "w": 37,
+    "h": 30,
+    "left_pct": 54.792,
+    "top_pct": 73.704,
+    "width_pct": 7.708,
+    "height_pct": 11.111
+  },
+  "LostTurnPage_0": {
+    "type": "full_canvas",
+    "left_pct": 0,
+    "top_pct": 0,
+    "width_pct": 100,
+    "height_pct": 100
+  },
+  "LostTurnPage_1": {
+    "type": "full_canvas",
+    "left_pct": 0,
+    "top_pct": 0,
+    "width_pct": 100,
+    "height_pct": 100
+  },
+  "YesButton_0": {
+    "type": "element",
+    "x": 180,
+    "y": 194,
+    "w": 37,
+    "h": 35,
+    "left_pct": 37.5,
+    "top_pct": 71.852,
+    "width_pct": 7.708,
+    "height_pct": 12.963
+  },
+  "YesButton_1": {
+    "type": "element",
+    "x": 180,
+    "y": 199,
+    "w": 37,
+    "h": 30,
+    "left_pct": 37.5,
+    "top_pct": 73.704,
+    "width_pct": 7.708,
+    "height_pct": 11.111
+  }
+}

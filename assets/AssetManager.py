@@ -51,4 +51,5 @@ def encode_all_assets(assets_root: Path = None) -> dict:
     for subfolder in sorted(p for p in root.iterdir() if p.is_dir()):
         manager = AssetManager(subfolder.name, assets_root=root)
         results[subfolder.name] = manager.encode_all()
-        return results
+    return results
+

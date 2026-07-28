@@ -1,0 +1,24 @@
+{
+  "PagePlayerNumberButton_0": {
+    "type": "element",
+    "x": 184,
+    "y": 198,
+    "w": 112,
+    "h": 47,
+    "left_pct": 38.333,
+    "top_pct": 73.333,
+    "width_pct": 23.333,
+    "height_pct": 17.407
+  },
+  "PagePlayerNumberButton_1": {
+    "type": "element",
+    "x": 184,
+    "y": 205,
+    "w": 112,
+    "h": 40,
+    "left_pct": 38.333,
+    "top_pct": 75.926,
+    "width_pct": 23.333,
+    "height_pct": 14.815
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "wheelWheel_0": {
+    "type": "element",
+    "x": 112,
+    "y": 8,
+    "w": 256,
+    "h": 254,
+    "left_pct": 23.333,
+    "top_pct": 2.963,
+    "width_pct": 53.333,
+    "height_pct": 94.074
+  },
+  "wheelBackground_0": {
+    "type": "full_canvas",
+    "left_pct": 0,
+    "top_pct": 0,
+    "width_pct": 100,
+    "height_pct": 100
+  },
+  "wheelPointer_0": {
+    "type": "element",
+    "x": 224,
+    "y": 3,
+    "w": 26,
+    "h": 50,
+    "left_pct": 46.667,
+    "top_pct": 1.111,
+    "width_pct": 5.417,
+    "height_pct": 18.519
+  },
+  "wheelCurrentPoints_0": {
+    "type": "element",
+    "x": 391,
+    "y": 213,
+    "w": 82,
+    "h": 47,
+    "left_pct": 81.458,
+    "top_pct": 78.889,
+    "width_pct": 17.083,
+    "height_pct": 17.407
+  },
+  "wheelSpinsLeft_0": {
+    "type": "element",
+    "x": 394,
+    "y": 15,
+    "w": 72,
+    "h": 36,
+    "left_pct": 82.083,
+    "top_pct": 5.556,
+    "width_pct": 15.0,
+    "height_pct": 13.333
+  },
+  "wheelSpinTokens_0": {
+    "type": "element",
+    "x": 391,
+    "y": 163,
+    "w": 82,
+    "h": 46,
+    "left_pct": 81.458,
+    "top_pct": 60.37,
+    "width_pct": 17.083,
+    "height_pct": 17.037
+  },
+  "wheelPlayerTurn_0": {
+    "type": "element",
+    "x": 15,
+    "y": 8,
+    "w": 99,
+    "h": 52,
+    "left_pct": 3.125,
+    "top_pct": 2.963,
+    "width_pct": 20.625,
+    "height_pct": 19.259
+  }
+}
