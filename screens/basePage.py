@@ -1,8 +1,7 @@
 import streamlit as st
+import streamlit.components.v1 as components
 
 from assets.AssetManager import AssetManager
-# Adjust the import above to match your actual project structure, e.g.:
-#   from assets.AssetManager import AssetManager
 
 
 class BasePage:
@@ -198,6 +197,81 @@ class BasePage:
             console.warn("triggerNav button not found for {nav_id}");
         }}
         """
+
+    def render_static_scene(self, layers: list):
+        """
+        Renders a set of PNG layers stacked at fixed positions on the
+        480x270 stage, with responsive sizing (fit_to_window_js) already
+        wired in. Used for placeholder pages that just need to display
+        their art without interactive buttons yet.
+
+        layers: list of (asset_name, box_dict) tuples, in back-to-front
+        order. box_dict has left_pct/top_pct/width_pct/height_pct (as
+        found in each page's positions_manifest.json).
+        """
+        FRAME_W, FRAME_H = 480, 270
+
+        layer_divs = ""
+        layer_css = ""
+        for i, (name, box) in enumerate(layers):
+            img_data = self.assets.get(name)
+            div_id = f"layer-{i}"
+            layer_divs += f'<div class="layer" id="{div_id}"></div>\n'
+            layer_css += f"""
+                #{div_id} {{
+                    position: absolute;
+                    left: {box["left_pct"]:.3f}%;
+                    top: {box["top_pct"]:.3f}%;
+                    width: {box["width_pct"]:.3f}%;
+                    height: {box["height_pct"]:.3f}%;
+                    background-image: url('data:image/png;base64,{img_data}');
+                    background-size: 100% 100%;
+                    image-rendering: pixelated;
+                }}
+            """
+
+        html = f"""
+        <style>
+            html, body {{ margin: 0; padding: 0; }}
+            #stage-wrap {{
+                width: 100%;
+                max-width: {self.STAGE_MAX_WIDTH_CSS};
+                margin: 0 auto;
+            }}
+            #stage {{
+                position: relative;
+                width: 100%;
+                aspect-ratio: {FRAME_W} / {FRAME_H};
+                image-rendering: pixelated;
+                overflow: hidden;
+            }}
+            .layer {{ position: absolute; image-rendering: pixelated; }}
+            {layer_css}
+        </style>
+
+        <div id="stage-wrap">
+            <div id="stage">
+                {layer_divs}
+            </div>
+        </div>
+
+        <script>
+            {self.fit_to_window_js(FRAME_W, FRAME_H)}
+
+            function resizeFrame() {{
+                const stage = document.getElementById("stage");
+                if (window.frameElement) {{
+                    window.frameElement.style.height = (stage.offsetHeight + 10) + "px";
+                }}
+            }}
+            function fitAndResize() {{ fitToWindow(); resizeFrame(); }}
+            window.addEventListener("resize", fitAndResize);
+            window.addEventListener("load", fitAndResize);
+            setTimeout(fitAndResize, 50);
+            setTimeout(fitAndResize, 300);
+        </script>
+        """
+        components.html(html, height=int(FRAME_H / FRAME_W * 700) + 20)
 
     def __init__(self, assets_subfolder: str):
         self.assets = AssetManager(assets_subfolder)
