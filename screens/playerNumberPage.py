@@ -9,6 +9,9 @@ class PlayerNumberPage(BasePage):
     Asks how many players will be playing. The number box itself has no
     dedicated art, so we overlay a real HTML <input> (styled with a pixel
     font) directly on top of the green box drawn in the background art.
+
+    Also has a Back button (reusing GameStartBackbutton art) returning to
+    the title screen.
     """
 
     FRAME_W, FRAME_H = 480, 270
@@ -21,9 +24,13 @@ class PlayerNumberPage(BasePage):
     }
 
     # Button bounding box from positions_manifest.json (unpressed frame)
-    BUTTON_BOX = {
+    SUBMIT_BOX = {
         "left_pct": 38.333, "top_pct": 73.333,
         "width_pct": 23.333, "height_pct": 17.407,
+    }
+    BACK_BOX = {
+        "left_pct": 0.833, "top_pct": 0.370,
+        "width_pct": 7.708, "height_pct": 12.963,
     }
 
     def __init__(self):
@@ -36,14 +43,18 @@ class PlayerNumberPage(BasePage):
             "playernum_submit", "wheel",
             value_session_key="player_count", default_value=4,
         )
+        self.render_nav_trigger("playernum_back", "title")
 
         bg = a.get("PagePlayerNumberBackground_0")
-        button_unpressed = a.get("PagePlayerNumberButton_0")
-        button_pressed = a.get("PagePlayerNumberButton_1")
+        submit_unpressed = a.get("PagePlayerNumberButton_0")
+        submit_pressed = a.get("PagePlayerNumberButton_1")
+        back_unpressed = a.get("GameStartBackbutton_0")
+        back_pressed = a.get("GameStartBackbutton_1")
 
         FRAME_W, FRAME_H = self.FRAME_W, self.FRAME_H
         ib = self.INPUT_BOX
-        bb = self.BUTTON_BOX
+        sb = self.SUBMIT_BOX
+        bk = self.BACK_BOX
 
         html = f"""
         <style>
@@ -83,8 +94,6 @@ class PlayerNumberPage(BasePage):
                 color: #1a1a1a;
                 box-sizing: border-box;
             }}
-            /* Hide the little up/down spinner arrows most browsers add to
-               number inputs, since they don't fit the pixel-art look. */
             #player-count-input::-webkit-outer-spin-button,
             #player-count-input::-webkit-inner-spin-button {{
                 -webkit-appearance: none;
@@ -95,14 +104,25 @@ class PlayerNumberPage(BasePage):
             }}
             #submit-btn {{
                 position: absolute;
-                left: {bb["left_pct"]:.3f}%;
-                top: {bb["top_pct"]:.3f}%;
-                width: {bb["width_pct"]:.3f}%;
-                height: {bb["height_pct"]:.3f}%;
+                left: {sb["left_pct"]:.3f}%;
+                top: {sb["top_pct"]:.3f}%;
+                width: {sb["width_pct"]:.3f}%;
+                height: {sb["height_pct"]:.3f}%;
                 cursor: pointer;
                 background-size: 100% 100%;
                 image-rendering: pixelated;
-                background-image: url('data:image/png;base64,{button_unpressed}');
+                background-image: url('data:image/png;base64,{submit_unpressed}');
+            }}
+            #back-btn {{
+                position: absolute;
+                left: {bk["left_pct"]:.3f}%;
+                top: {bk["top_pct"]:.3f}%;
+                width: {bk["width_pct"]:.3f}%;
+                height: {bk["height_pct"]:.3f}%;
+                cursor: pointer;
+                background-size: 100% 100%;
+                image-rendering: pixelated;
+                background-image: url('data:image/png;base64,{back_unpressed}');
             }}
         </style>
 
@@ -111,46 +131,73 @@ class PlayerNumberPage(BasePage):
                 <div id="bg-layer"></div>
                 <input id="player-count-input" type="number" min="1" max="12" value="4" />
                 <div id="submit-btn"></div>
+                <div id="back-btn"></div>
             </div>
         </div>
 
         <script>
-            const unpressedImg = "data:image/png;base64,{button_unpressed}";
-            const pressedImg = "data:image/png;base64,{button_pressed}";
-
-            const btn = document.getElementById("submit-btn");
-            const input = document.getElementById("player-count-input");
-            let isPressed = false;
-
-            btn.addEventListener("pointerdown", (e) => {{
-                isPressed = true;
-                btn.style.backgroundImage = "url('" + pressedImg + "')";
-                btn.setPointerCapture(e.pointerId);
-            }});
-
             {self.nav_trigger_with_value_js("playernum_submit")}
+            {self.nav_trigger_js("playernum_back")}
 
-            btn.addEventListener("pointerup", () => {{
-                if (!isPressed) return;
-                isPressed = false;
-                btn.style.backgroundImage = "url('" + unpressedImg + "')";
+            // --- Submit button (its own uniquely-named variables) ---
+            const submitUnpressedImg = "data:image/png;base64,{submit_unpressed}";
+            const submitPressedImg = "data:image/png;base64,{submit_pressed}";
+            const submitBtn = document.getElementById("submit-btn");
+            const input = document.getElementById("player-count-input");
+            let isSubmitPressed = false;
 
+            submitBtn.addEventListener("pointerdown", (e) => {{
+                isSubmitPressed = true;
+                submitBtn.style.backgroundImage = "url('" + submitPressedImg + "')";
+                submitBtn.setPointerCapture(e.pointerId);
+            }});
+            submitBtn.addEventListener("pointerup", () => {{
+                if (!isSubmitPressed) return;
+                isSubmitPressed = false;
+                submitBtn.style.backgroundImage = "url('" + submitUnpressedImg + "')";
                 const count = input.value || "1";
                 setAndTriggerNav_playernum_submit(count);
             }});
-
-            btn.addEventListener("pointerleave", () => {{
-                if (!isPressed) return;
-                isPressed = false;
-                btn.style.backgroundImage = "url('" + unpressedImg + "')";
+            submitBtn.addEventListener("pointerleave", () => {{
+                if (!isSubmitPressed) return;
+                isSubmitPressed = false;
+                submitBtn.style.backgroundImage = "url('" + submitUnpressedImg + "')";
             }});
-            btn.addEventListener("pointercancel", () => {{
-                isPressed = false;
-                btn.style.backgroundImage = "url('" + unpressedImg + "')";
+            submitBtn.addEventListener("pointercancel", () => {{
+                isSubmitPressed = false;
+                submitBtn.style.backgroundImage = "url('" + submitUnpressedImg + "')";
+            }});
+
+            // --- Back button (its own uniquely-named variables) ---
+            const backUnpressedImg = "data:image/png;base64,{back_unpressed}";
+            const backPressedImg = "data:image/png;base64,{back_pressed}";
+            const backBtn = document.getElementById("back-btn");
+            let isBackPressed = false;
+
+            backBtn.addEventListener("pointerdown", (e) => {{
+                isBackPressed = true;
+                backBtn.style.backgroundImage = "url('" + backPressedImg + "')";
+                backBtn.setPointerCapture(e.pointerId);
+            }});
+            backBtn.addEventListener("pointerup", () => {{
+                if (!isBackPressed) return;
+                isBackPressed = false;
+                backBtn.style.backgroundImage = "url('" + backUnpressedImg + "')";
+                triggerNav_playernum_back();
+            }});
+            backBtn.addEventListener("pointerleave", () => {{
+                if (!isBackPressed) return;
+                isBackPressed = false;
+                backBtn.style.backgroundImage = "url('" + backUnpressedImg + "')";
+            }});
+            backBtn.addEventListener("pointercancel", () => {{
+                isBackPressed = false;
+                backBtn.style.backgroundImage = "url('" + backUnpressedImg + "')";
             }});
 
             window.addEventListener("pageshow", () => {{
-                btn.style.backgroundImage = "url('" + unpressedImg + "')";
+                submitBtn.style.backgroundImage = "url('" + submitUnpressedImg + "')";
+                backBtn.style.backgroundImage = "url('" + backUnpressedImg + "')";
             }});
 
             {self.fit_to_window_js(FRAME_W, FRAME_H)}
@@ -169,6 +216,3 @@ class PlayerNumberPage(BasePage):
         </script>
         """
         components.html(html, height=int(FRAME_H / FRAME_W * 700) + 20)
-
-        # Read the player count back out on the receiving page (gameRules)
-        # via: st.query_params.get("playerCount")

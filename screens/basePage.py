@@ -138,7 +138,7 @@ class BasePage:
         label = f"NAVTRIGGER-{nav_id}"
         container_key = f"hidden_nav_{nav_id}"
         with st.container(key=container_key):
-            value = st.number_input("", key=f"hiddenval_{nav_id}", value=default_value, label_visibility="collapsed")
+            value = st.number_input("Player count", key=f"hiddenval_{nav_id}", value=default_value, label_visibility="collapsed")
             if st.button(label, key=f"navbtn_{nav_id}"):
                 st.session_state[value_session_key] = value
                 st.query_params["page"] = target_page
