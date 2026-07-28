@@ -3,6 +3,8 @@ import streamlit as st
 from screens.titlePage import TitlePage
 from screens.gameRulesPage import GameRulesPage
 from screens.customUploadPage import CustomUploadPage
+from screens.playerNumberPage import PlayerNumberPage
+from screens.wheelPage import WheelPage
 
 st.set_page_config(page_title="Wheel of Jeopardy", layout="wide")
 
@@ -46,6 +48,8 @@ PAGES = {
     "title": TitlePage,
     "gameRules": GameRulesPage,
     "customUploadpage": CustomUploadPage,
+    "playerNumberPage": PlayerNumberPage,
+    "wheel": WheelPage,
 }
 
 current_page_name = st.query_params.get("page", "title")

@@ -6,9 +6,10 @@ from screens.basePage import BasePage
 
 class GameRulesPage(BasePage):
     """
-    Shows the game rules. Has a real sprite Back button (returns to
-    playerNumberPage). The "Start Game" action has no art yet, so it's a
-    temporary native Streamlit button until that asset exists.
+    Pure info page - shows the game rules. Reached ONLY via the title
+    screen's Help button. Has a real sprite Back button that returns to
+    the title screen. No path to actually start a game lives here
+    anymore - that flow is: title Start -> playerNumberPage -> wheel.
     """
 
     FRAME_W, FRAME_H = 480, 270
@@ -20,16 +21,15 @@ class GameRulesPage(BasePage):
 
     def __init__(self):
         super().__init__("gameRules")
-
-        # Carry the player count forward from playerNumberPage into
-        # session_state, so it survives further navigation even after
-        # the "playerCount" query param is gone from the URL.
-        count = st.query_params.get("playerCount")
-        if count is not None:
-            st.session_state["player_count"] = count
+        # player_count is already set directly into st.session_state by
+        # PlayerNumberPage's render_nav_trigger_with_value() - nothing to
+        # do here, just documenting where it comes from. Access it via:
+        #   st.session_state.get("player_count")
 
     def render(self):
         a = self.assets
+
+        self.render_nav_trigger("gamerules_back", "title")
         # NOTE: GameStartRules_0 and _1 both came back as identical
         # full-canvas frames (like the old title background), so we just
         # use frame 0 as a static image. Swap this for a real animation
@@ -89,6 +89,8 @@ class GameRulesPage(BasePage):
             const btn = document.getElementById("back-btn");
             let isPressed = false;
 
+            {self.nav_trigger_js("gamerules_back")}
+
             btn.addEventListener("pointerdown", (e) => {{
                 isPressed = true;
                 btn.style.backgroundImage = "url('" + pressedImg + "')";
@@ -98,9 +100,7 @@ class GameRulesPage(BasePage):
                 if (!isPressed) return;
                 isPressed = false;
                 btn.style.backgroundImage = "url('" + unpressedImg + "')";
-                const url = new URL(window.parent.location.href);
-                url.searchParams.set("page", "playerNumberPage");
-                window.parent.location.href = url.toString();
+                triggerNav_gamerules_back();
             }});
             btn.addEventListener("pointerleave", () => {{
                 if (!isPressed) return;
@@ -131,11 +131,3 @@ class GameRulesPage(BasePage):
         </script>
         """
         components.html(html, height=int(FRAME_H / FRAME_W * 700) + 20)
-
-        st.write("")  # small spacing gap below the component
-        # TODO: replace with a real pixel-art "Start Game" button/asset
-        # once it's designed - this is a placeholder so the flow is
-        # testable end-to-end right now.
-        if st.button("▶ Start Game (placeholder)"):
-            st.query_params["page"] = "wheelPage"  # adjust to your real first gameplay page
-            st.rerun()

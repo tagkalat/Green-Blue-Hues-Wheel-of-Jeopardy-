@@ -31,6 +31,12 @@ class PlayerNumberPage(BasePage):
 
     def render(self):
         a = self.assets
+
+        self.render_nav_trigger_with_value(
+            "playernum_submit", "wheel",
+            value_session_key="player_count", default_value=4,
+        )
+
         bg = a.get("PagePlayerNumberBackground_0")
         button_unpressed = a.get("PagePlayerNumberButton_0")
         button_pressed = a.get("PagePlayerNumberButton_1")
@@ -122,16 +128,15 @@ class PlayerNumberPage(BasePage):
                 btn.setPointerCapture(e.pointerId);
             }});
 
+            {self.nav_trigger_with_value_js("playernum_submit")}
+
             btn.addEventListener("pointerup", () => {{
                 if (!isPressed) return;
                 isPressed = false;
                 btn.style.backgroundImage = "url('" + unpressedImg + "')";
 
                 const count = input.value || "1";
-                const url = new URL(window.parent.location.href);
-                url.searchParams.set("page", "gameRules");
-                url.searchParams.set("playerCount", count);
-                window.parent.location.href = url.toString();
+                setAndTriggerNav_playernum_submit(count);
             }});
 
             btn.addEventListener("pointerleave", () => {{

@@ -33,6 +33,14 @@ class TitlePage(BasePage):
 
     def render(self):
         a = self.assets
+
+        # Hidden real Streamlit buttons that actually perform navigation -
+        # see BasePage.render_nav_trigger() for why this replaced the old
+        # window.parent.location.href approach (blocked by iframe sandbox).
+        self.render_nav_trigger("title_start", "playerNumberPage")
+        self.render_nav_trigger("title_custom", "customUploadpage")
+        self.render_nav_trigger("title_help", "gameRules")
+
         bg = a.get("background_0")
         title_stars_0 = a.get("TitleAndStars_0")
         title_stars_1 = a.get("TitleAndStars_1")
@@ -123,7 +131,17 @@ class TitlePage(BasePage):
                 help: "data:image/png;base64,{help_pressed}"
             }};
 
-            function bindButton(id, key, targetPage) {{
+            {self.nav_trigger_js("title_start")}
+            {self.nav_trigger_js("title_custom")}
+            {self.nav_trigger_js("title_help")}
+
+            const navTriggers = {{
+                start: triggerNav_title_start,
+                custom: triggerNav_title_custom,
+                help: triggerNav_title_help
+            }};
+
+            function bindButton(id, key) {{
                 const el = document.getElementById(id);
                 let isPressed = false;
 
@@ -137,9 +155,7 @@ class TitlePage(BasePage):
                     if (!isPressed) return;
                     isPressed = false;
                     el.style.backgroundImage = "url('" + unpressedImgs[key] + "')";
-                    const url = new URL(window.parent.location.href);
-                    url.searchParams.set("page", targetPage);
-                    window.parent.location.href = url.toString();
+                    navTriggers[key]();
                 }});
 
                 el.addEventListener("pointerleave", () => {{
@@ -153,9 +169,9 @@ class TitlePage(BasePage):
                 }});
             }}
 
-            bindButton("start-btn", "start", "playerNumberPage");
-            bindButton("custom-btn", "custom", "customUploadpage");
-            bindButton("help-btn", "help", "gameRules");
+            bindButton("start-btn", "start");
+            bindButton("custom-btn", "custom");
+            bindButton("help-btn", "help");
 
             // Reset to unpressed on any (re)show, including bfcache restores
             function resetButtons() {{

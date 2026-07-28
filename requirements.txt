@@ -1,1 +1,4 @@
 # No external packages required for the console skeletal demo.
+
+streamlit
+streamlit

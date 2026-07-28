@@ -32,6 +32,8 @@ class CustomUploadPage(BasePage):
 
     def render(self):
         a = self.assets
+
+        self.render_nav_trigger("customupload_back", "playerNumberPage")
         bg = a.get("CustomUploadBackground_0")
         # NOTE: Rulebox_0 and _1 share the same position/size - treating
         # as a static box for now since there's no clear press/animation
@@ -131,6 +133,8 @@ class CustomUploadPage(BasePage):
             const btn = document.getElementById("back-btn");
             let isPressed = false;
 
+            {self.nav_trigger_js("customupload_back")}
+
             btn.addEventListener("pointerdown", (e) => {{
                 isPressed = true;
                 btn.style.backgroundImage = "url('" + pressedImg + "')";
@@ -141,9 +145,7 @@ class CustomUploadPage(BasePage):
                 isPressed = false;
                 btn.style.backgroundImage = "url('" + unpressedImg + "')";
                 // Per design: this button continues FORWARD, not back.
-                const url = new URL(window.parent.location.href);
-                url.searchParams.set("page", "playerNumberPage");
-                window.parent.location.href = url.toString();
+                triggerNav_customupload_back();
             }});
             btn.addEventListener("pointerleave", () => {{
                 if (!isPressed) return;
