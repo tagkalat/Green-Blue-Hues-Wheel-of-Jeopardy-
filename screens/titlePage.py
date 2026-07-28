@@ -153,7 +153,7 @@ class TitlePage(BasePage):
                 }});
             }}
 
-            bindButton("start-btn", "start", "gameRules");
+            bindButton("start-btn", "start", "playerNumberPage");
             bindButton("custom-btn", "custom", "customUploadpage");
             bindButton("help-btn", "help", "gameRules");
 
@@ -165,6 +165,8 @@ class TitlePage(BasePage):
             }}
             window.addEventListener("pageshow", resetButtons);
 
+            {self.fit_to_window_js(FRAME_W, FRAME_H)}
+
             // Auto-size the iframe to the actual responsive stage height
             function resizeFrame() {{
                 const stage = document.getElementById("stage");
@@ -172,10 +174,14 @@ class TitlePage(BasePage):
                     window.frameElement.style.height = (stage.offsetHeight + 10) + "px";
                 }}
             }}
-            window.addEventListener("resize", resizeFrame);
-            window.addEventListener("load", resizeFrame);
-            setTimeout(resizeFrame, 50);
-            setTimeout(resizeFrame, 300);
+            function fitAndResize() {{
+                fitToWindow();
+                resizeFrame();
+            }}
+            window.addEventListener("resize", fitAndResize);
+            window.addEventListener("load", fitAndResize);
+            setTimeout(fitAndResize, 50);
+            setTimeout(fitAndResize, 300);
         </script>
         """
         components.html(html, height=int(FRAME_H / FRAME_W * 700) + 20)
