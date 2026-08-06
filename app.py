@@ -5,6 +5,13 @@ from screens.gameRulesPage import GameRulesPage
 from screens.customUploadPage import CustomUploadPage
 from screens.playerNumberPage import PlayerNumberPage
 from screens.wheelPage import WheelPage
+from screens.freeSpinPage import FreeSpinPage
+from screens.lostTurnPage import LostTurnPage
+from screens.bankruptPage import BankruptPage
+from screens.categoryPage import CategoryPage
+from screens.answerPage import AnswerPage
+from screens.playerChoicePage import PlayersChoicePage
+from screens.opponentChoicePage import OpponentChoicePage
 
 st.set_page_config(page_title="Wheel of Jeopardy", layout="wide")
 
@@ -50,6 +57,13 @@ PAGES = {
     "customUploadpage": CustomUploadPage,
     "playerNumberPage": PlayerNumberPage,
     "wheel": WheelPage,
+    "freeSpinPage": FreeSpinPage,
+    "lostTurnPage": LostTurnPage,
+    "bankruptPage": BankruptPage,
+    "categoryPage": CategoryPage,
+    "answerPage": AnswerPage,
+    "playersChoicePage": PlayersChoicePage,
+    "opponentChoicePage": OpponentChoicePage,
 }
 
 current_page_name = st.query_params.get("page", "title")

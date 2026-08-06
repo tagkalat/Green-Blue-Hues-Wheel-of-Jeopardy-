@@ -21,6 +21,30 @@ class WheelPage(BasePage):
     FRAME_W, FRAME_H = 480, 270
     NUM_SECTORS = 11
 
+    # Placeholder category names for the 6 category sectors - swap these
+    # for real data from question_repository once it's wired up. The 5
+    # fixed outcome sectors are interleaved with them below. Order/sector
+    # assignment is arbitrary for now (no art-tied mapping exists yet) -
+    # reorder this list any time to match the actual wheel art.
+    SECTOR_LABELS = [
+        "Category 1",
+        "Category 2",
+        "Free Spin",
+        "Category 3",
+        "Lose Turn",
+        "Category 4",
+        "Bankruptcy",
+        "Category 5",
+        "Player's",
+        "Category 6",
+        "Opponent's",
+    ]
+
+    # How far out from the wheel's center each label sits, as a percent
+    # of the wheel's own radius. 63.5% sits within the colored sector
+    # ring (between the hub and the outer rim).
+    LABEL_RADIUS_PCT = 63.5
+
     # Wheel graphic's own box on the stage (from positions_manifest.json).
     # Rotation is applied to this element directly, around its own center,
     # so its position on the page never needs to change - only its
@@ -32,12 +56,23 @@ class WheelPage(BasePage):
 
     def render(self):
         a = self.assets
+        import html as _html
+
+        # Dynamic HUD values - read from session_state with sensible
+        # defaults, so this page is already "wired up": once your game
+        # logic sets these session_state keys elsewhere (e.g. after each
+        # spin, or when a turn changes), this page reflects them
+        # automatically with zero further changes needed here.
+        player_number_display = st.session_state.get("current_player_number", 1)
+        spins_left_display = st.session_state.get("spins_left", 30)  # 30 per round, backend decrements
+        free_spin_tokens_display = st.session_state.get("free_spin_tokens", 0)
+        current_points_display = st.session_state.get("current_points", 0)
 
         # Static (non-spinning) layers - background, pointer, HUD elements
         static_layers = [
             ("wheelBackground_0", {"left_pct": 0, "top_pct": 0, "width_pct": 100, "height_pct": 100}),
             ("wheelPlayerTurn_0", {"left_pct": 3.125, "top_pct": 2.963, "width_pct": 20.625, "height_pct": 19.259}),
-            ("wheelSpinsLeft_0", {"left_pct": 82.083, "top_pct": 5.556, "width_pct": 15.0, "height_pct": 13.333}),
+            ("wheelSpinsLeft_0", {"left_pct": 85.417, "top_pct": 5.556, "width_pct": 7.708, "height_pct": 13.333}),
             ("wheelSpinTokens_0", {"left_pct": 81.458, "top_pct": 60.370, "width_pct": 17.083, "height_pct": 17.037}),
             ("wheelCurrentPoints_0", {"left_pct": 81.458, "top_pct": 78.889, "width_pct": 17.083, "height_pct": 17.407}),
         ]
@@ -71,8 +106,56 @@ class WheelPage(BasePage):
         pointer_name, pointer_box = pointer_layer
         pointer_img = a.get(pointer_name)
 
+        # Text readouts overlaid on top of their matching box art. Reuses
+        # the same box coordinates as the underlying static layer so the
+        # text sits centered within each box automatically.
+        hud_readouts = [
+            ("hud-player", static_layers[1][1], f"Player {player_number_display}"),
+            ("hud-spins-left", static_layers[2][1], str(spins_left_display)),
+            ("hud-free-spin-tokens", static_layers[3][1], str(free_spin_tokens_display)),
+            ("hud-current-points", static_layers[4][1], str(current_points_display)),
+        ]
+        hud_divs = ""
+        hud_css = ""
+        for div_id, box, text in hud_readouts:
+            hud_divs += f'<div class="hud-readout" id="{div_id}">{_html.escape(text)}</div>\n'
+            hud_css += f"""
+                #{div_id} {{
+                    left: {box["left_pct"]:.3f}%;
+                    top: {box["top_pct"]:.3f}%;
+                    width: {box["width_pct"]:.3f}%;
+                    height: {box["height_pct"]:.3f}%;
+                }}
+            """
+
+        # Build one rotated label per sector. Each is a full-size wrapper
+        # (same size as the wheel graphic) rotated to that sector's angle,
+        # with the actual text positioned near the top of that wrapper -
+        # i.e. at LABEL_RADIUS_PCT "up" from center, before rotation
+        # carries it around to the correct clock position. Because these
+        # divs live INSIDE #wheel-graphic, they inherit its transform
+        # automatically during the spin animation - no extra JS needed.
+        sector_angle = 360 / self.NUM_SECTORS
+        # LABEL_RADIUS_PCT is "percent of the wheel's RADIUS" (half the
+        # box height/width). CSS `top` percentages are relative to the
+        # FULL height though, so converting radius-fraction -> top-percent
+        # needs a /2: top_pct = 50 - (radius_pct / 2), not 50 - radius_pct.
+        top_offset_pct = 50 - (self.LABEL_RADIUS_PCT / 2)
+
+        label_divs = ""
+        for i in range(self.NUM_SECTORS):
+            angle = i * sector_angle
+            text = _html.escape(self.SECTOR_LABELS[i]) if i < len(self.SECTOR_LABELS) else ""
+            label_divs += f"""
+            <div class="sector-label" style="transform: rotate({angle:.3f}deg);">
+                <div class="sector-label-text" style="top: {top_offset_pct:.3f}%;">{text}</div>
+            </div>
+            """
+
         html = f"""
         <style>
+            @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
             html, body {{ margin: 0; padding: 0; }}
             #stage-wrap {{
                 width: 100%;
@@ -88,6 +171,31 @@ class WheelPage(BasePage):
             }}
             .layer {{ position: absolute; image-rendering: pixelated; }}
             {static_css}
+
+            .hud-readout {{
+                position: absolute;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                font-family: 'Press Start 2P', monospace;
+                font-size: min(2.2vw, 13px);
+                color: #1a1a1a;
+                pointer-events: none;
+                padding: 4%;
+                box-sizing: border-box;
+            }}
+            /* Spins-left box sits right next to the small decorative wheel
+               icon in the background art - centering the number puts it
+               too close to (or overlapping) the icon, so right-align it
+               instead to keep clear space between them. */
+            #hud-spins-left {{
+                justify-content: center;
+                font-size: var(--hud-spins-font-size, 24px);
+                color: #ffffff;
+                padding: 0;
+            }}
+            {hud_css}
 
             #wheel-graphic {{
                 position: absolute;
@@ -107,6 +215,30 @@ class WheelPage(BasePage):
             }}
             #wheel-graphic.spinning {{
                 cursor: not-allowed;
+            }}
+
+            /* Sector labels - each wrapper is rotated to its sector's
+               angle; being children of #wheel-graphic, they spin along
+               with it automatically. */
+            .sector-label {{
+                position: absolute;
+                inset: 0;
+                transform-origin: 50% 50%;
+                pointer-events: none;
+            }}
+            .sector-label-text {{
+                position: absolute;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                writing-mode: vertical-lr;
+                text-orientation: upright;
+                text-align: center;
+                font-family: 'Press Start 2P', monospace;
+                font-size: var(--label-font-size, 14px);
+                line-height: 1.2;
+                letter-spacing: 0px;
+                color: #1a1a1a;
+                white-space: nowrap;
             }}
 
             #pointer-layer {{
@@ -142,7 +274,10 @@ class WheelPage(BasePage):
         <div id="stage-wrap">
             <div id="stage">
                 {static_divs}
-                <div id="wheel-graphic"></div>
+                {hud_divs}
+                <div id="wheel-graphic">
+                    {label_divs}
+                </div>
                 <div id="pointer-layer"></div>
                 <div id="result-readout"></div>
             </div>
@@ -151,6 +286,7 @@ class WheelPage(BasePage):
         <script>
             const NUM_SECTORS = {self.NUM_SECTORS};
             const SECTOR_ANGLE = 360 / NUM_SECTORS;
+            const SECTOR_LABELS = {__import__("json").dumps([self.SECTOR_LABELS[i] if i < len(self.SECTOR_LABELS) else "" for i in range(self.NUM_SECTORS)])};
 
             const wheelEl = document.getElementById("wheel-graphic");
             const readoutEl = document.getElementById("result-readout");
@@ -204,12 +340,74 @@ class WheelPage(BasePage):
                 setTimeout(() => {{
                     isSpinning = false;
                     wheelEl.classList.remove("spinning");
-                    readoutEl.textContent = "Landed on sector: " + (winningSector + 1);
+                    readoutEl.textContent = "Landed on: " + SECTOR_LABELS[winningSector];
                     readoutEl.classList.add("visible");
                 }}, 4100); // slightly longer than the 4s CSS transition
             }}
 
             wheelEl.addEventListener("click", spinWheel);
+
+            // Reference wheel width (in px) that the requested 14px font
+            // size was designed/verified against. Font scales up/down
+            // proportionally to however big the wheel actually renders,
+            // so text stays the same RELATIVE size on any screen instead
+            // of staying fixed at 14px while the wheel shrinks around it.
+            const REFERENCE_WHEEL_WIDTH_PX = 635;
+            const BASE_FONT_PX = 14;
+
+            // HUD readouts (like spins-left) sit on the STAGE, not inside
+            // the rotating wheel, so their scale reference is the stage's
+            // own width rather than the wheel's. Reference stage width
+            // matches what the wheel's 635px reference corresponds to
+            // (wheel is 53.333% of stage width).
+            const REFERENCE_STAGE_WIDTH_PX = REFERENCE_WHEEL_WIDTH_PX / 0.53333;
+            const BASE_HUD_SPINS_FONT_PX = 24;
+            const stageEl = document.getElementById("stage");
+
+            function updateHudFontScale() {{
+                const scale = stageEl.offsetWidth / REFERENCE_STAGE_WIDTH_PX;
+                const fontPx = BASE_HUD_SPINS_FONT_PX * scale;
+                stageEl.style.setProperty("--hud-spins-font-size", fontPx + "px");
+            }}
+
+            function updateLabelFontScale() {{
+                const scale = wheelEl.offsetWidth / REFERENCE_WHEEL_WIDTH_PX;
+                const fontPx = BASE_FONT_PX * scale;
+                wheelEl.style.setProperty("--label-font-size", fontPx + "px");
+            }}
+
+            // Labels are positioned at a fixed radius (LABEL_RADIUS_PCT)
+            // by default, but longer labels can be tall enough as
+            // vertical text that their outer edge would render past the
+            // wheel's visible rim. Measures each label's real rendered
+            // size and nudges ONLY the ones that would overflow inward
+            // just enough to stay within the wheel - short labels stay
+            // exactly at the requested radius. Always resets to the
+            // default position first, so this is safe to call repeatedly
+            // on every resize (e.g. if the wheel grows back to a size
+            // where a previously-clamped label no longer needs clamping).
+            function clampLabelsToWheel() {{
+                const wheelHeight = wheelEl.offsetHeight;
+                const minTopPct = 3; // small safety margin from the outer rim
+                const desiredCenterPct = {top_offset_pct:.3f};
+                document.querySelectorAll(".sector-label-text").forEach((el) => {{
+                    el.style.top = desiredCenterPct + "%"; // reset to default first
+                    const halfHeightPct = (el.offsetHeight / 2 / wheelHeight) * 100;
+                    const outerEdgePct = desiredCenterPct - halfHeightPct;
+                    if (outerEdgePct < minTopPct) {{
+                        el.style.top = (minTopPct + halfHeightPct) + "%";
+                    }}
+                }});
+            }}
+
+            function updateLabelSizingAndPosition() {{
+                updateLabelFontScale();
+                updateHudFontScale();
+                clampLabelsToWheel();
+            }}
+            if (document.fonts && document.fonts.ready) {{
+                document.fonts.ready.then(updateLabelSizingAndPosition);
+            }}
 
             {self.fit_to_window_js(FRAME_W, FRAME_H)}
 
@@ -219,11 +417,16 @@ class WheelPage(BasePage):
                     window.frameElement.style.height = (stage.offsetHeight + 10) + "px";
                 }}
             }}
-            function fitAndResize() {{ fitToWindow(); resizeFrame(); }}
+            function fitAndResize() {{
+                fitToWindow();
+                resizeFrame();
+                updateLabelSizingAndPosition();
+            }}
             window.addEventListener("resize", fitAndResize);
             window.addEventListener("load", fitAndResize);
             setTimeout(fitAndResize, 50);
             setTimeout(fitAndResize, 300);
+            setTimeout(fitAndResize, 800); // extra late pass in case web font loading shifted sizes
         </script>
         """
         components.html(html, height=int(FRAME_H / FRAME_W * 700) + 20)

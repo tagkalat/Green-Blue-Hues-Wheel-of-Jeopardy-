@@ -62,7 +62,7 @@ class BasePage:
         window.parent.addEventListener("resize", fitToWindow);
         """
 
-    def render_nav_trigger(self, nav_id: str, target_page: str, extra_session_keys: dict = None):
+    def render_nav_trigger(self, nav_id: str, target_page: str, extra_session_keys: dict = None, on_click=None):
         """
         Renders an invisible REAL Streamlit button that performs navigation
         when clicked. Pair this with nav_trigger_js(nav_id) in your JS -
@@ -77,11 +77,17 @@ class BasePage:
         placeholders this nav trigger should carry forward as-is (their
         current session_state values are preserved across the rerun
         automatically - session_state isn't cleared by st.rerun()).
+
+        on_click: optional zero-arg callable run right before navigating
+        (e.g. to update session_state - decrementing a token count,
+        applying a score change, etc.) as part of this same click.
         """
         label = f"NAVTRIGGER-{nav_id}"
         container_key = f"hidden_nav_{nav_id}"
         with st.container(key=container_key):
             if st.button(label, key=f"navbtn_{nav_id}"):
+                if on_click is not None:
+                    on_click()
                 st.query_params["page"] = target_page
                 st.rerun()
         # Push the container off-screen. Off-screen elements are still
