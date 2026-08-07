@@ -38,6 +38,20 @@ class CategoryPage(BasePage):
         4: {"left_pct": 21.875, "top_pct": 61.481, "width_pct": 22.917, "height_pct": 26.667},
         5: {"left_pct": 55.208, "top_pct": 61.481, "width_pct": 22.917, "height_pct": 26.667},
     }
+    # The pressed-state art is a genuinely different size (shorter, shifted
+    # down slightly) than the unpressed art - that size difference IS the
+    # "squished down" look. Swapping just the image while keeping the
+    # unpressed box's fixed dimensions stretches the pressed art back out,
+    # which looks like elongating instead of pressing. These are each
+    # button's OWN real pressed-frame position/size, so on press we swap
+    # the element's box to match, not just its background image.
+    QUESTION_BOXES_PRESSED = {
+        1: {"left_pct": 7.292, "top_pct": 36.296, "width_pct": 22.917, "height_pct": 22.963},
+        2: {"left_pct": 38.542, "top_pct": 36.296, "width_pct": 22.917, "height_pct": 22.963},
+        3: {"left_pct": 69.792, "top_pct": 36.296, "width_pct": 22.917, "height_pct": 22.963},
+        4: {"left_pct": 21.875, "top_pct": 65.185, "width_pct": 22.917, "height_pct": 22.963},
+        5: {"left_pct": 55.208, "top_pct": 65.185, "width_pct": 22.917, "height_pct": 22.963},
+    }
     CATEGORY_NAME_BOX = {
         "left_pct": 30.208, "top_pct": 1.852, "width_pct": 38.542, "height_pct": 26.667,
     }
@@ -118,14 +132,19 @@ class CategoryPage(BasePage):
                     height: {box["height_pct"]:.3f}%;
                 }}
             """
+            pressed_box = self.QUESTION_BOXES_PRESSED[i]
             js_image_lookups += f"""
                 qImages[{i}] = {{
                     unpressed: "data:image/png;base64,{unpressed}",
                     pressed: "data:image/png;base64,{pressed}"
                 }};
+                qBoxes[{i}] = {{
+                    unpressed: {{ left: {box["left_pct"]:.3f}, top: {box["top_pct"]:.3f}, width: {box["width_pct"]:.3f}, height: {box["height_pct"]:.3f} }},
+                    pressed: {{ left: {pressed_box["left_pct"]:.3f}, top: {pressed_box["top_pct"]:.3f}, width: {pressed_box["width_pct"]:.3f}, height: {pressed_box["height_pct"]:.3f} }}
+                }};
             """
             js_bind_calls += f'{self.nav_trigger_js(f"category_q{i}")}\n'
-            js_bind_calls += f'bindQuestionButton("{div_id}", {i}, triggerNav_category_q{i});\n'
+            js_bind_calls += f'bindQuestionButton("{div_id}", "{text_id}", {i}, triggerNav_category_q{i});\n'
 
         html = f"""
         <style>
@@ -193,18 +212,17 @@ class CategoryPage(BasePage):
             #current-points-text {{
                 position: absolute;
                 left: {cpb["left_pct"]:.3f}%;
-                top: {cpb["top_pct"]:.3f}%;
+                top: 85.556%;
                 width: {cpb["width_pct"]:.3f}%;
-                height: {cpb["height_pct"]:.3f}%;
+                height: 7.778%;
                 display: flex;
-                align-items: flex-end;
+                align-items: center;
                 justify-content: center;
                 text-align: center;
                 font-family: 'Press Start 2P', monospace;
                 font-size: min(1.8vw, 11px);
                 color: #ffffff;
                 pointer-events: none;
-                padding-bottom: 12%;
                 box-sizing: border-box;
             }}
             .q-hotspot {{
@@ -240,33 +258,53 @@ class CategoryPage(BasePage):
 
         <script>
             const qImages = {{}};
+            const qBoxes = {{}};
             {js_image_lookups}
 
+            function applyBoxGeometry(el, box) {{
+                el.style.left = box.left + "%";
+                el.style.top = box.top + "%";
+                el.style.width = box.width + "%";
+                el.style.height = box.height + "%";
+            }}
+
             // Shared binder for all 5 question buttons - avoids
-            // hand-duplicating near-identical pointer event blocks.
-            function bindQuestionButton(elementId, qNum, triggerNavFn) {{
+            // hand-duplicating near-identical pointer event blocks. Moves
+            // BOTH the hotspot and its text label to match each frame's
+            // own real geometry (not just swapping the image), so the
+            // pressed state actually looks squished rather than stretched.
+            function bindQuestionButton(elementId, textId, qNum, triggerNavFn) {{
                 const el = document.getElementById(elementId);
+                const textEl = document.getElementById(textId);
                 let isPressed = false;
 
                 el.addEventListener("pointerdown", (e) => {{
                     isPressed = true;
                     el.style.backgroundImage = "url('" + qImages[qNum].pressed + "')";
+                    applyBoxGeometry(el, qBoxes[qNum].pressed);
+                    applyBoxGeometry(textEl, qBoxes[qNum].pressed);
                     el.setPointerCapture(e.pointerId);
                 }});
                 el.addEventListener("pointerup", () => {{
                     if (!isPressed) return;
                     isPressed = false;
                     el.style.backgroundImage = "url('" + qImages[qNum].unpressed + "')";
+                    applyBoxGeometry(el, qBoxes[qNum].unpressed);
+                    applyBoxGeometry(textEl, qBoxes[qNum].unpressed);
                     triggerNavFn();
                 }});
                 el.addEventListener("pointerleave", () => {{
                     if (!isPressed) return;
                     isPressed = false;
                     el.style.backgroundImage = "url('" + qImages[qNum].unpressed + "')";
+                    applyBoxGeometry(el, qBoxes[qNum].unpressed);
+                    applyBoxGeometry(textEl, qBoxes[qNum].unpressed);
                 }});
                 el.addEventListener("pointercancel", () => {{
                     isPressed = false;
                     el.style.backgroundImage = "url('" + qImages[qNum].unpressed + "')";
+                    applyBoxGeometry(el, qBoxes[qNum].unpressed);
+                    applyBoxGeometry(textEl, qBoxes[qNum].unpressed);
                 }});
             }}
 

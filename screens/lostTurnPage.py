@@ -25,6 +25,17 @@ class LostTurnPage(BasePage):
         "left_pct": 54.792, "top_pct": 71.852,
         "width_pct": 7.708, "height_pct": 12.963,
     }
+    # Pressed-frame art is a different real size (shorter) than unpressed -
+    # that's what makes it look "pressed down". Swap geometry too, not
+    # just the image, or the pressed art stretches instead of squishing.
+    YES_BOX_PRESSED = {
+        "left_pct": 37.5, "top_pct": 73.704,
+        "width_pct": 7.708, "height_pct": 11.111,
+    }
+    NO_BOX_PRESSED = {
+        "left_pct": 54.792, "top_pct": 73.704,
+        "width_pct": 7.708, "height_pct": 11.111,
+    }
 
     def __init__(self):
         super().__init__("LostTurnPage")
@@ -57,6 +68,8 @@ class LostTurnPage(BasePage):
         ifb = self.IF_FREE_SPIN_BOX
         yb = self.YES_BOX
         nb = self.NO_BOX
+        ybp = self.YES_BOX_PRESSED
+        nbp = self.NO_BOX_PRESSED
 
         yes_button_html = f'<div id="yes-btn"></div>' if has_free_spin else ""
         yes_button_css = f"""
@@ -86,22 +99,38 @@ class LostTurnPage(BasePage):
             yesBtn.addEventListener("pointerdown", (e) => {{
                 isYesPressed = true;
                 yesBtn.style.backgroundImage = "url('" + yesPressedImg + "')";
+                yesBtn.style.left = "{ybp["left_pct"]:.3f}%";
+                yesBtn.style.top = "{ybp["top_pct"]:.3f}%";
+                yesBtn.style.width = "{ybp["width_pct"]:.3f}%";
+                yesBtn.style.height = "{ybp["height_pct"]:.3f}%";
                 yesBtn.setPointerCapture(e.pointerId);
             }});
             yesBtn.addEventListener("pointerup", () => {{
                 if (!isYesPressed) return;
                 isYesPressed = false;
                 yesBtn.style.backgroundImage = "url('" + yesUnpressedImg + "')";
+                yesBtn.style.left = "{yb["left_pct"]:.3f}%";
+                yesBtn.style.top = "{yb["top_pct"]:.3f}%";
+                yesBtn.style.width = "{yb["width_pct"]:.3f}%";
+                yesBtn.style.height = "{yb["height_pct"]:.3f}%";
                 triggerNav_lostturn_yes();
             }});
             yesBtn.addEventListener("pointerleave", () => {{
                 if (!isYesPressed) return;
                 isYesPressed = false;
                 yesBtn.style.backgroundImage = "url('" + yesUnpressedImg + "')";
+                yesBtn.style.left = "{yb["left_pct"]:.3f}%";
+                yesBtn.style.top = "{yb["top_pct"]:.3f}%";
+                yesBtn.style.width = "{yb["width_pct"]:.3f}%";
+                yesBtn.style.height = "{yb["height_pct"]:.3f}%";
             }});
             yesBtn.addEventListener("pointercancel", () => {{
                 isYesPressed = false;
                 yesBtn.style.backgroundImage = "url('" + yesUnpressedImg + "')";
+                yesBtn.style.left = "{yb["left_pct"]:.3f}%";
+                yesBtn.style.top = "{yb["top_pct"]:.3f}%";
+                yesBtn.style.width = "{yb["width_pct"]:.3f}%";
+                yesBtn.style.height = "{yb["height_pct"]:.3f}%";
             }});
         """ if has_free_spin else ""
 
@@ -173,22 +202,38 @@ class LostTurnPage(BasePage):
             noBtn.addEventListener("pointerdown", (e) => {{
                 isNoPressed = true;
                 noBtn.style.backgroundImage = "url('" + noPressedImg + "')";
+                noBtn.style.left = "{nbp["left_pct"]:.3f}%";
+                noBtn.style.top = "{nbp["top_pct"]:.3f}%";
+                noBtn.style.width = "{nbp["width_pct"]:.3f}%";
+                noBtn.style.height = "{nbp["height_pct"]:.3f}%";
                 noBtn.setPointerCapture(e.pointerId);
             }});
             noBtn.addEventListener("pointerup", () => {{
                 if (!isNoPressed) return;
                 isNoPressed = false;
                 noBtn.style.backgroundImage = "url('" + noUnpressedImg + "')";
+                noBtn.style.left = "{nb["left_pct"]:.3f}%";
+                noBtn.style.top = "{nb["top_pct"]:.3f}%";
+                noBtn.style.width = "{nb["width_pct"]:.3f}%";
+                noBtn.style.height = "{nb["height_pct"]:.3f}%";
                 triggerNav_lostturn_no();
             }});
             noBtn.addEventListener("pointerleave", () => {{
                 if (!isNoPressed) return;
                 isNoPressed = false;
                 noBtn.style.backgroundImage = "url('" + noUnpressedImg + "')";
+                noBtn.style.left = "{nb["left_pct"]:.3f}%";
+                noBtn.style.top = "{nb["top_pct"]:.3f}%";
+                noBtn.style.width = "{nb["width_pct"]:.3f}%";
+                noBtn.style.height = "{nb["height_pct"]:.3f}%";
             }});
             noBtn.addEventListener("pointercancel", () => {{
                 isNoPressed = false;
                 noBtn.style.backgroundImage = "url('" + noUnpressedImg + "')";
+                noBtn.style.left = "{nb["left_pct"]:.3f}%";
+                noBtn.style.top = "{nb["top_pct"]:.3f}%";
+                noBtn.style.width = "{nb["width_pct"]:.3f}%";
+                noBtn.style.height = "{nb["height_pct"]:.3f}%";
             }});
 
             {self.fit_to_window_js(FRAME_W, FRAME_H)}

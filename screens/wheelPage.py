@@ -40,6 +40,24 @@ class WheelPage(BasePage):
         "Opponent's",
     ]
 
+    # Where each sector actually navigates to, matched index-for-index
+    # with SECTOR_LABELS above. Category sectors carry which category
+    # number to select; the 5 fixed sectors don't need extra data.
+    # Keys must exactly match app.py's PAGES dict.
+    SECTOR_DESTINATIONS = [
+        ("categoryPage", 1),          # 0: Category 1
+        ("categoryPage", 2),          # 1: Category 2
+        ("freeSpinPage", None),       # 2: Free Spin
+        ("categoryPage", 3),          # 3: Category 3
+        ("lostTurnPage", None),       # 4: Lose Turn
+        ("categoryPage", 4),          # 5: Category 4
+        ("bankruptPage", None),       # 6: Bankruptcy
+        ("categoryPage", 5),          # 7: Category 5
+        ("playersChoicePage", None),  # 8: Player's Choice
+        ("categoryPage", 6),          # 9: Category 6
+        ("opponentChoicePage", None), # 10: Opponent's Choice
+    ]
+
     # How far out from the wheel's center each label sits, as a percent
     # of the wheel's own radius. 63.5% sits within the colored sector
     # ring (between the hub and the outer rim).
@@ -57,6 +75,21 @@ class WheelPage(BasePage):
     def render(self):
         a = self.assets
         import html as _html
+
+        # One hidden nav trigger per sector, so the spin-completion JS can
+        # fire whichever one matches the sector that was actually landed
+        # on. Category sectors also set selected_category before navigating.
+        for sector_i, (target_page, category_num) in enumerate(self.SECTOR_DESTINATIONS):
+            def make_callback(cat_num):
+                def callback():
+                    if cat_num is not None:
+                        st.session_state["selected_category"] = cat_num
+                return callback
+
+            self.render_nav_trigger(
+                f"wheel_sector{sector_i}", target_page,
+                on_click=make_callback(category_num),
+            )
 
         # Dynamic HUD values - read from session_state with sensible
         # defaults, so this page is already "wired up": once your game
@@ -195,6 +228,18 @@ class WheelPage(BasePage):
                 color: #ffffff;
                 padding: 0;
             }}
+            /* "Current Points" box has a baked-in label taking the top
+               ~38% of its height, with the actual red fill area below it
+               - measured directly from the source art's pixels. Position
+               the dynamic number within just that red region, not the
+               whole box (which was overlapping the label text). */
+            #hud-current-points {{
+                top: 85.558% !important;
+                height: 7.782% !important;
+                color: #ffffff;
+                font-size: min(1.8vw, 11px);
+                padding: 0;
+            }}
             {hud_css}
 
             #wheel-graphic {{
@@ -288,6 +333,11 @@ class WheelPage(BasePage):
             const SECTOR_ANGLE = 360 / NUM_SECTORS;
             const SECTOR_LABELS = {__import__("json").dumps([self.SECTOR_LABELS[i] if i < len(self.SECTOR_LABELS) else "" for i in range(self.NUM_SECTORS)])};
 
+            {"".join(self.nav_trigger_js(f"wheel_sector{i}") for i in range(self.NUM_SECTORS))}
+            const sectorNavTriggers = [
+                {", ".join(f"triggerNav_wheel_sector{i}" for i in range(self.NUM_SECTORS))}
+            ];
+
             const wheelEl = document.getElementById("wheel-graphic");
             const readoutEl = document.getElementById("result-readout");
 
@@ -342,6 +392,12 @@ class WheelPage(BasePage):
                     wheelEl.classList.remove("spinning");
                     readoutEl.textContent = "Landed on: " + SECTOR_LABELS[winningSector];
                     readoutEl.classList.add("visible");
+
+                    // Let the player see the result for a moment, then
+                    // navigate to whatever page that sector leads to.
+                    setTimeout(() => {{
+                        sectorNavTriggers[winningSector]();
+                    }}, 1800);
                 }}, 4100); // slightly longer than the 4s CSS transition
             }}
 

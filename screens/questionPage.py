@@ -21,6 +21,13 @@ class QuestionPage(BasePage):
         2: {"left_pct": 22.917, "top_pct": 50.000, "width_pct": 54.167, "height_pct": 21.111},
         3: {"left_pct": 22.917, "top_pct": 72.963, "width_pct": 54.167, "height_pct": 21.111},
     }
+    # Pressed-frame art is shorter (real "squish down" size) than
+    # unpressed - swap geometry, not just the image, on press.
+    ANSWER_BOXES_PRESSED = {
+        1: {"left_pct": 22.917, "top_pct": 28.519, "width_pct": 54.167, "height_pct": 18.889},
+        2: {"left_pct": 22.917, "top_pct": 51.852, "width_pct": 54.167, "height_pct": 18.889},
+        3: {"left_pct": 22.917, "top_pct": 74.815, "width_pct": 54.167, "height_pct": 18.889},
+    }
     QUESTION_TEXT_BOX = {
         "left_pct": 16.667, "top_pct": 1.852, "width_pct": 66.667, "height_pct": 22.963,
     }
@@ -118,14 +125,19 @@ class QuestionPage(BasePage):
                     height: {box["height_pct"]:.3f}%;
                 }}
             """
+            pressed_box = self.ANSWER_BOXES_PRESSED[i]
             js_image_lookups += f"""
                 answerImages[{i}] = {{
                     unpressed: "data:image/png;base64,{unpressed}",
                     pressed: "data:image/png;base64,{pressed}"
                 }};
+                answerBoxes[{i}] = {{
+                    unpressed: {{ left: {box["left_pct"]:.3f}, top: {box["top_pct"]:.3f}, width: {box["width_pct"]:.3f}, height: {box["height_pct"]:.3f} }},
+                    pressed: {{ left: {pressed_box["left_pct"]:.3f}, top: {pressed_box["top_pct"]:.3f}, width: {pressed_box["width_pct"]:.3f}, height: {pressed_box["height_pct"]:.3f} }}
+                }};
             """
             js_bind_calls += f'{self.nav_trigger_js(f"question_answer{i}")}\n'
-            js_bind_calls += f'bindAnswerButton("{div_id}", {i}, triggerNav_question_answer{i});\n'
+            js_bind_calls += f'bindAnswerButton("{div_id}", "{text_id}", {i}, triggerNav_question_answer{i});\n'
 
         html = f"""
         <style>
@@ -194,18 +206,17 @@ class QuestionPage(BasePage):
             #current-points-text {{
                 position: absolute;
                 left: {cpb["left_pct"]:.3f}%;
-                top: {cpb["top_pct"]:.3f}%;
+                top: 85.556%;
                 width: {cpb["width_pct"]:.3f}%;
-                height: {cpb["height_pct"]:.3f}%;
+                height: 7.778%;
                 display: flex;
-                align-items: flex-end;
+                align-items: center;
                 justify-content: center;
                 text-align: center;
                 font-family: 'Press Start 2P', monospace;
                 font-size: min(1.8vw, 11px);
                 color: #ffffff;
                 pointer-events: none;
-                padding-bottom: 12%;
                 box-sizing: border-box;
             }}
             .answer-hotspot {{
@@ -243,31 +254,48 @@ class QuestionPage(BasePage):
 
         <script>
             const answerImages = {{}};
+            const answerBoxes = {{}};
             {js_image_lookups}
 
-            function bindAnswerButton(elementId, aNum, triggerNavFn) {{
+            function applyAnswerBoxGeometry(el, box) {{
+                el.style.left = box.left + "%";
+                el.style.top = box.top + "%";
+                el.style.width = box.width + "%";
+                el.style.height = box.height + "%";
+            }}
+
+            function bindAnswerButton(elementId, textId, aNum, triggerNavFn) {{
                 const el = document.getElementById(elementId);
+                const textEl = document.getElementById(textId);
                 let isPressed = false;
 
                 el.addEventListener("pointerdown", (e) => {{
                     isPressed = true;
                     el.style.backgroundImage = "url('" + answerImages[aNum].pressed + "')";
+                    applyAnswerBoxGeometry(el, answerBoxes[aNum].pressed);
+                    applyAnswerBoxGeometry(textEl, answerBoxes[aNum].pressed);
                     el.setPointerCapture(e.pointerId);
                 }});
                 el.addEventListener("pointerup", () => {{
                     if (!isPressed) return;
                     isPressed = false;
                     el.style.backgroundImage = "url('" + answerImages[aNum].unpressed + "')";
+                    applyAnswerBoxGeometry(el, answerBoxes[aNum].unpressed);
+                    applyAnswerBoxGeometry(textEl, answerBoxes[aNum].unpressed);
                     triggerNavFn();
                 }});
                 el.addEventListener("pointerleave", () => {{
                     if (!isPressed) return;
                     isPressed = false;
                     el.style.backgroundImage = "url('" + answerImages[aNum].unpressed + "')";
+                    applyAnswerBoxGeometry(el, answerBoxes[aNum].unpressed);
+                    applyAnswerBoxGeometry(textEl, answerBoxes[aNum].unpressed);
                 }});
                 el.addEventListener("pointercancel", () => {{
                     isPressed = false;
                     el.style.backgroundImage = "url('" + answerImages[aNum].unpressed + "')";
+                    applyAnswerBoxGeometry(el, answerBoxes[aNum].unpressed);
+                    applyAnswerBoxGeometry(textEl, answerBoxes[aNum].unpressed);
                 }});
             }}
 

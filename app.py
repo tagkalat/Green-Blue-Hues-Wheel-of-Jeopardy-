@@ -9,7 +9,9 @@ from screens.freeSpinPage import FreeSpinPage
 from screens.lostTurnPage import LostTurnPage
 from screens.bankruptPage import BankruptPage
 from screens.categoryPage import CategoryPage
+from screens.questionPage import QuestionPage
 from screens.answerPage import AnswerPage
+from screens.winnerPage import WinnerPage
 from screens.playerChoicePage import PlayersChoicePage
 from screens.opponentChoicePage import OpponentChoicePage
 
@@ -61,7 +63,9 @@ PAGES = {
     "lostTurnPage": LostTurnPage,
     "bankruptPage": BankruptPage,
     "categoryPage": CategoryPage,
+    "questionPage": QuestionPage,
     "answerPage": AnswerPage,
+    "winnerPage": WinnerPage,
     "playersChoicePage": PlayersChoicePage,
     "opponentChoicePage": OpponentChoicePage,
 }

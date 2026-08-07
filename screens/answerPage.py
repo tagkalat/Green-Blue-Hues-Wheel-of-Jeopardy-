@@ -36,6 +36,13 @@ class AnswerPage(BasePage):
     NO_BOX = {
         "left_pct": 54.792, "top_pct": 83.333, "width_pct": 7.708, "height_pct": 12.963,
     }
+    # Pressed-frame art is shorter than unpressed - swap geometry too.
+    YES_BOX_PRESSED = {
+        "left_pct": 37.5, "top_pct": 85.185, "width_pct": 7.708, "height_pct": 11.111,
+    }
+    NO_BOX_PRESSED = {
+        "left_pct": 54.792, "top_pct": 85.185, "width_pct": 7.708, "height_pct": 11.111,
+    }
 
     def __init__(self):
         super().__init__("AnswerPage")
@@ -97,6 +104,8 @@ class AnswerPage(BasePage):
         fpb = self.FREE_SPIN_PROMPT_BOX
         yb = self.YES_BOX
         nb = self.NO_BOX
+        ybp = self.YES_BOX_PRESSED
+        nbp = self.NO_BOX_PRESSED
 
         free_spin_html = ""
         free_spin_css = ""
@@ -162,22 +171,38 @@ class AnswerPage(BasePage):
                 yesBtn.addEventListener("pointerdown", (e) => {{
                     isYesPressed = true;
                     yesBtn.style.backgroundImage = "url('" + yesPressedImg + "')";
+                    yesBtn.style.left = "{ybp["left_pct"]:.3f}%";
+                    yesBtn.style.top = "{ybp["top_pct"]:.3f}%";
+                    yesBtn.style.width = "{ybp["width_pct"]:.3f}%";
+                    yesBtn.style.height = "{ybp["height_pct"]:.3f}%";
                     yesBtn.setPointerCapture(e.pointerId);
                 }});
                 yesBtn.addEventListener("pointerup", () => {{
                     if (!isYesPressed) return;
                     isYesPressed = false;
                     yesBtn.style.backgroundImage = "url('" + yesUnpressedImg + "')";
+                    yesBtn.style.left = "{yb["left_pct"]:.3f}%";
+                    yesBtn.style.top = "{yb["top_pct"]:.3f}%";
+                    yesBtn.style.width = "{yb["width_pct"]:.3f}%";
+                    yesBtn.style.height = "{yb["height_pct"]:.3f}%";
                     triggerNav_answer_freespin_yes();
                 }});
                 yesBtn.addEventListener("pointerleave", () => {{
                     if (!isYesPressed) return;
                     isYesPressed = false;
                     yesBtn.style.backgroundImage = "url('" + yesUnpressedImg + "')";
+                    yesBtn.style.left = "{yb["left_pct"]:.3f}%";
+                    yesBtn.style.top = "{yb["top_pct"]:.3f}%";
+                    yesBtn.style.width = "{yb["width_pct"]:.3f}%";
+                    yesBtn.style.height = "{yb["height_pct"]:.3f}%";
                 }});
                 yesBtn.addEventListener("pointercancel", () => {{
                     isYesPressed = false;
                     yesBtn.style.backgroundImage = "url('" + yesUnpressedImg + "')";
+                    yesBtn.style.left = "{yb["left_pct"]:.3f}%";
+                    yesBtn.style.top = "{yb["top_pct"]:.3f}%";
+                    yesBtn.style.width = "{yb["width_pct"]:.3f}%";
+                    yesBtn.style.height = "{yb["height_pct"]:.3f}%";
                 }});
 
                 const noUnpressedImg = "data:image/png;base64,{no_unpressed}";
@@ -187,22 +212,38 @@ class AnswerPage(BasePage):
                 noBtn.addEventListener("pointerdown", (e) => {{
                     isNoPressed = true;
                     noBtn.style.backgroundImage = "url('" + noPressedImg + "')";
+                    noBtn.style.left = "{nbp["left_pct"]:.3f}%";
+                    noBtn.style.top = "{nbp["top_pct"]:.3f}%";
+                    noBtn.style.width = "{nbp["width_pct"]:.3f}%";
+                    noBtn.style.height = "{nbp["height_pct"]:.3f}%";
                     noBtn.setPointerCapture(e.pointerId);
                 }});
                 noBtn.addEventListener("pointerup", () => {{
                     if (!isNoPressed) return;
                     isNoPressed = false;
                     noBtn.style.backgroundImage = "url('" + noUnpressedImg + "')";
+                    noBtn.style.left = "{nb["left_pct"]:.3f}%";
+                    noBtn.style.top = "{nb["top_pct"]:.3f}%";
+                    noBtn.style.width = "{nb["width_pct"]:.3f}%";
+                    noBtn.style.height = "{nb["height_pct"]:.3f}%";
                     triggerNav_answer_freespin_no();
                 }});
                 noBtn.addEventListener("pointerleave", () => {{
                     if (!isNoPressed) return;
                     isNoPressed = false;
                     noBtn.style.backgroundImage = "url('" + noUnpressedImg + "')";
+                    noBtn.style.left = "{nb["left_pct"]:.3f}%";
+                    noBtn.style.top = "{nb["top_pct"]:.3f}%";
+                    noBtn.style.width = "{nb["width_pct"]:.3f}%";
+                    noBtn.style.height = "{nb["height_pct"]:.3f}%";
                 }});
                 noBtn.addEventListener("pointercancel", () => {{
                     isNoPressed = false;
                     noBtn.style.backgroundImage = "url('" + noUnpressedImg + "')";
+                    noBtn.style.left = "{nb["left_pct"]:.3f}%";
+                    noBtn.style.top = "{nb["top_pct"]:.3f}%";
+                    noBtn.style.width = "{nb["width_pct"]:.3f}%";
+                    noBtn.style.height = "{nb["height_pct"]:.3f}%";
                 }});
             """
         else:
@@ -310,18 +351,17 @@ class AnswerPage(BasePage):
             #current-points-text {{
                 position: absolute;
                 left: {cpb["left_pct"]:.3f}%;
-                top: {cpb["top_pct"]:.3f}%;
+                top: 85.556%;
                 width: {cpb["width_pct"]:.3f}%;
-                height: {cpb["height_pct"]:.3f}%;
+                height: 7.778%;
                 display: flex;
-                align-items: flex-end;
+                align-items: center;
                 justify-content: center;
                 text-align: center;
                 font-family: 'Press Start 2P', monospace;
                 font-size: min(1.8vw, 11px);
                 color: #ffffff;
                 pointer-events: none;
-                padding-bottom: 12%;
                 box-sizing: border-box;
             }}
             #click-anywhere {{

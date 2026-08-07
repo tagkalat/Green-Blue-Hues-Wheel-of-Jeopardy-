@@ -22,6 +22,17 @@ class PlayersChoicePage(BasePage):
         5: {"left_pct": 53.125, "top_pct": 47.778, "width_pct": 22.917, "height_pct": 22.963},
         6: {"left_pct": 53.125, "top_pct": 72.963, "width_pct": 22.917, "height_pct": 22.963},
     }
+    # Pressed-frame art is shorter than unpressed - swap geometry too, or
+    # the pressed art stretches to fill the taller unpressed box instead
+    # of visually squishing down.
+    CATEGORY_BOXES_PRESSED = {
+        1: {"left_pct": 25.0, "top_pct": 26.667, "width_pct": 22.917, "height_pct": 18.889},
+        2: {"left_pct": 25.0, "top_pct": 51.852, "width_pct": 22.917, "height_pct": 18.889},
+        3: {"left_pct": 25.0, "top_pct": 76.667, "width_pct": 22.917, "height_pct": 18.889},
+        4: {"left_pct": 53.125, "top_pct": 26.667, "width_pct": 22.917, "height_pct": 18.889},
+        5: {"left_pct": 53.125, "top_pct": 51.852, "width_pct": 22.917, "height_pct": 18.889},
+        6: {"left_pct": 53.125, "top_pct": 76.667, "width_pct": 22.917, "height_pct": 18.889},
+    }
 
     def __init__(self):
         super().__init__("PlayersChoicePage")
@@ -69,10 +80,15 @@ class PlayersChoicePage(BasePage):
                     background-image: url('data:image/png;base64,{unpressed}');
                 }}
             """
+            pressed_box = self.CATEGORY_BOXES_PRESSED[cat_num]
             js_image_lookups += f"""
                 catImages[{cat_num}] = {{
                     unpressed: "data:image/png;base64,{unpressed}",
                     pressed: "data:image/png;base64,{pressed}"
+                }};
+                catBoxes[{cat_num}] = {{
+                    unpressed: {{ left: {box["left_pct"]:.3f}, top: {box["top_pct"]:.3f}, width: {box["width_pct"]:.3f}, height: {box["height_pct"]:.3f} }},
+                    pressed: {{ left: {pressed_box["left_pct"]:.3f}, top: {pressed_box["top_pct"]:.3f}, width: {pressed_box["width_pct"]:.3f}, height: {pressed_box["height_pct"]:.3f} }}
                 }};
             """
             js_bind_calls += f'{self.nav_trigger_js(f"playerschoice_cat{cat_num}")}\n'
@@ -118,7 +134,15 @@ class PlayersChoicePage(BasePage):
 
         <script>
             const catImages = {{}};
+            const catBoxes = {{}};
             {js_image_lookups}
+
+            function applyCatBoxGeometry(el, box) {{
+                el.style.left = box.left + "%";
+                el.style.top = box.top + "%";
+                el.style.width = box.width + "%";
+                el.style.height = box.height + "%";
+            }}
 
             // Shared binder for all 6 category buttons - avoids
             // hand-duplicating near-identical pointerdown/up/leave/cancel
@@ -131,22 +155,26 @@ class PlayersChoicePage(BasePage):
                 el.addEventListener("pointerdown", (e) => {{
                     isPressed = true;
                     el.style.backgroundImage = "url('" + catImages[catNum].pressed + "')";
+                    applyCatBoxGeometry(el, catBoxes[catNum].pressed);
                     el.setPointerCapture(e.pointerId);
                 }});
                 el.addEventListener("pointerup", () => {{
                     if (!isPressed) return;
                     isPressed = false;
                     el.style.backgroundImage = "url('" + catImages[catNum].unpressed + "')";
+                    applyCatBoxGeometry(el, catBoxes[catNum].unpressed);
                     triggerNavFn();
                 }});
                 el.addEventListener("pointerleave", () => {{
                     if (!isPressed) return;
                     isPressed = false;
                     el.style.backgroundImage = "url('" + catImages[catNum].unpressed + "')";
+                    applyCatBoxGeometry(el, catBoxes[catNum].unpressed);
                 }});
                 el.addEventListener("pointercancel", () => {{
                     isPressed = false;
                     el.style.backgroundImage = "url('" + catImages[catNum].unpressed + "')";
+                    applyCatBoxGeometry(el, catBoxes[catNum].unpressed);
                 }});
             }}
 
